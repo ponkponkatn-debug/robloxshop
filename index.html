@@ -65,27 +65,140 @@
         </div>
     </div>
 
-    <!-- รายการสคริปต์ยอดฮิต Trending (ใส่รูปภาพที่คุณอัปโหลดเข้ามาแล้ว) -->
+    <!-- รายการสคริปต์ยอดฮิต Trending -->
     <div class="section-title">🔥 TRENDING SCRIPTS</div>
     <div class="script-grid">
         
-        <!-- สคริปต์ที่ 1: Urban Reload (ภาพที่ 1) -->
+        <!-- สคริปต์ที่ 1: Urban Reload -->
         <div class="script-card">
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="Urban Reload">
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="Urban Reload">
             <div class="script-info">
                 <span class="script-tag">#01 URBAN RELOAD</span>
-                <h4 class="script-title">Urban Reload Rage - Silent Aimbot & ESP</h4>
-                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/example/script1.lua\'))()')">📋 COPY SCRIPT</button>
+                <h4 class="script-title">Urban Reload - Official Script</h4>
+                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://cdn.luaprotect.dev/u/7e871f/CqKl89tXpms_pR8i\'))()')">📋 COPY SCRIPT</button>
             </div>
         </div>
 
-        <!-- สคริปต์ที่ 2: Block Spin (ภาพที่ 2) -->
+        <!-- สคริปต์ที่ 2: Blockspin -->
         <div class="script-card">
-            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" alt="Block Spin">
+            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80" alt="Blockspin">
             <div class="script-info">
-                <span class="script-tag">#02 BLOCK SPIN</span>
-                <h4 class="script-title">BlockSpin Script 2026 - Free OP Aimbot</h4>
-                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/example/script2.lua\'))()')">📋 COPY SCRIPT</button>
+                <span class="script-tag">#02 BLOCKSPIN</span>
+                <h4 class="script-title">Blockspin - Hermanos Hub Loader</h4>
+                <button class="copy-btn" onclick="copyScript('getgenv().script_mode = &quot;PVP&quot;\nloadstring(game:HttpGet(\&quot;https://raw.githubusercontent.com/hermanos-dev/hermanos-hub/refs/heads/main/Loader.lua\&quot;))()')">📋 COPY SCRIPT</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function searchScript() {
+            var keyword = document.getElementById('searchInput').value.trim();
+            if(!keyword) {
+                alert('กรุณาพิมพ์ชื่อเกมหรือสคริปต์ที่ต้องการค้นหาครับ!');
+                return;
+            }
+            alert('🔍 กำลังค้นหาสคริปต์: "' + keyword + '"...');
+        }
+
+        function copyScript(scriptCode) {
+            navigator.clipboard.writeText(scriptCode).then(function() {
+                alert('✅ คัดลอกสคริปต์สำเร็จ! นำไปรันในเกม Roblox ได้เลย');
+            }, function() {
+                alert('คัดลอกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+            });
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniScript - Roblox Script Hub</title>
+    <style>
+        body { background-color: #0b0d12; color: #ffffff; font-family: sans-serif; margin: 0; padding: 10px; }
+        
+        /* หน้าเว็บหลัก Script Hub โทนเขียวดำ */
+        .hub-header { text-align: center; padding: 20px 10px; background: linear-gradient(180deg, #111e18, #0b0d12); border-bottom: 1px solid #1f293d; margin-bottom: 15px; }
+        .hub-logo { font-size: 24px; font-weight: bold; color: #34d399; margin-bottom: 5px; text-shadow: 0 0 10px rgba(52,211,153,0.5); }
+        .hub-sub { color: #9ca3af; font-size: 12px; margin-bottom: 15px; }
+        
+        /* ช่องค้นหาสคริปต์ */
+        .search-box { display: flex; background: #141824; border: 1px solid #10b981; border-radius: 30px; padding: 6px 12px; max-width: 320px; margin: 0 auto; align-items: center; box-shadow: 0 0 15px rgba(16,185,129,0.15); }
+        .search-input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 13px; padding-left: 5px; }
+        .search-btn { background: #10b981; color: #0b0d12; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
+
+        /* สถิติเว็บ */
+        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; text-align: center; }
+        .stat-card { background: #141824; border: 1px solid #1f293d; border-radius: 10px; padding: 10px 5px; }
+        .stat-num { font-size: 15px; font-weight: bold; color: #34d399; }
+        .stat-label { font-size: 10px; color: #9ca3af; margin-top: 2px; }
+
+        /* หมวดหมู่ / รายการสคริปต์ยอดฮิต */
+        .section-title { font-size: 15px; font-weight: bold; color: #34d399; margin: 15px 0 10px 0; border-left: 3px solid #10b981; padding-left: 8px; }
+        
+        .script-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        .script-card { background: #141824; border: 1px solid #1f293d; border-radius: 12px; overflow: hidden; position: relative; }
+        .script-card img { width: 100%; height: 160px; object-fit: cover; }
+        .script-info { padding: 12px; }
+        .script-tag { background: #064e3b; color: #34d399; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 6px; }
+        .script-title { font-size: 14px; font-weight: bold; color: #fff; margin: 0 0 6px 0; }
+        .copy-btn { background: #10b981; color: #0b0d12; border: none; width: 100%; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    </style>
+</head>
+<body>
+
+    <!-- หน้าเว็บหลัก MiniScript Hub -->
+    <div class="hub-header">
+        <div class="hub-logo">⚡ MiniScript</div>
+        <div class="hub-sub">รวมสคริปต์ Roblox ยอดฮิต อัปเดตใหม่ล่าสุด</div>
+        
+        <!-- ช่องค้นหาสคริปต์ -->
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="Try 'Blox Fruits'...">
+            <button class="search-btn" onclick="searchScript()">Search</button>
+        </div>
+    </div>
+
+    <!-- แถบสถิติ -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-num">21</div>
+            <div class="stat-label">TOTAL SCRIPTS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">6</div>
+            <div class="stat-label">CREATORS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">8</div>
+            <div class="stat-label">GAMES</div>
+        </div>
+    </div>
+
+    <!-- รายการสคริปต์ยอดฮิต Trending -->
+    <div class="section-title">🔥 TRENDING SCRIPTS</div>
+    <div class="script-grid">
+        
+        <!-- สคริปต์ที่ 1: Urban Reload -->
+        <div class="script-card">
+            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="Urban Reload">
+            <div class="script-info">
+                <span class="script-tag">#01 URBAN RELOAD</span>
+                <h4 class="script-title">Urban Reload - Official Script</h4>
+                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://cdn.luaprotect.dev/u/7e871f/CqKl89tXpms_pR8i\'))()')">📋 COPY SCRIPT</button>
+            </div>
+        </div>
+
+        <!-- สคริปต์ที่ 2: Blockspin -->
+        <div class="script-card">
+            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80" alt="Blockspin">
+            <div class="script-info">
+                <span class="script-tag">#02 BLOCKSPIN</span>
+                <h4 class="script-title">Blockspin - Hermanos Hub Loader</h4>
+                <button class="copy-btn" onclick="copyScript('getgenv().script_mode = &quot;PVP&quot;\nloadstring(game:HttpGet(\&quot;https://raw.githubusercontent.com/hermanos-dev/hermanos-hub/refs/heads/main/Loader.lua\&quot;))()')">📋 COPY SCRIPT</button>
             </div>
         </div>
 
