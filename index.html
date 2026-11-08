@@ -6,6 +6,23 @@
     <title>MINI SHOP - Roblox Store</title>
     <style>
         body { background-color: #0b0d12; color: #ffffff; font-family: sans-serif; margin: 0; padding: 12px; }
+        
+        /* หน้าจอต่างๆ (สลับสเต็ปการแสดงผล) */
+        .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; text-align: center; }
+        .auth-card { background: #141824; border: 1px solid #d97706; border-radius: 14px; padding: 20px; width: 100%; max-width: 320px; box-sizing: border-box; }
+        .auth-card h2 { color: #fbbf24; margin-top: 0; font-size: 20px; }
+        .auth-card p { color: #9ca3af; font-size: 12px; margin-bottom: 12px; }
+        .auth-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #374151; background: #0b0d12; color: #fff; box-sizing: border-box; margin-bottom: 10px; font-size: 14px; }
+        
+        /* กล่องยืนยันไม่ใช่บอท */
+        .captcha-box { background: #1f293d; border: 1px solid #374151; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 13px; text-align: center; }
+        .captcha-box span { color: #34d399; font-weight: bold; font-size: 15px; }
+
+        .auth-btn { width: 100%; padding: 12px; background: #f59e0b; color: #0b0d12; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+        /* หน้าเว็บหลัก (ซ่อนไว้ก่อน) */
+        #main-shop { display: none; }
+
         .shop-banner { background: linear-gradient(135deg, #1e150c, #2d1808); border: 1px solid #d97706; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 12px; }
         .shop-banner h2 { color: #fbbf24; margin: 0 0 5px 0; font-size: 20px; }
         .shop-banner p { color: #9ca3af; font-size: 12px; margin: 0; }
@@ -29,35 +46,115 @@
     </style>
 </head>
 <body>
-    <div class="shop-banner">
-        <h2>🔥 MINI SHOP 🔥</h2>
-        <p>รหัส Roblox มือสองพร้อมเล่น ปลอดภัย 100%</p>
+
+    <!-- STEP 1: หน้าจอสมัครสมาชิก (กรอกชื่อ) -->
+    <div id="register-screen" class="auth-screen">
+        <div class="auth-card">
+            <h2>🔐 สมัครสมาชิก MINI SHOP</h2>
+            <p>กรอกชื่อผู้ใช้หรือยูสเซอร์เนมเพื่อเริ่มใช้งาน</p>
+            <input type="text" id="usernameInput" class="auth-input" placeholder="ชื่อผู้ใช้ / Username...">
+            <button class="auth-btn" onclick="nextToCaptcha()">ต่อไป</button>
+        </div>
     </div>
 
-    <!-- ประกาศแจกรหัสฟรีคนแรก -->
-    <div class="free-banner">
-        <h3>🎉 ฉลองเปิดร้านใหม่! แจกฟรีรหัสแรก!</h3>
-        <p>สำหรับผู้โชคดีคนแรกที่เข้ามาเยี่ยมชมเว็บไซต์ รับไปเลยฟรี 1 รหัส!</p>
-        <a href="#" class="free-btn" onclick="alert('ยินดีด้วย! แคปภาพนี้ส่งมารับรหัสฟรีได้เลยครับ')">🎁 กดรับสิทธิ์คนแรก</a>
+    <!-- STEP 2: หน้าจอยืนยันไม่ใช่บอท (ซ่อนไว้ก่อน จนกว่าจะกรอกชื่อเสร็จ) -->
+    <div id="captcha-screen" class="auth-screen" style="display: none;">
+        <div class="auth-card">
+            <h2>🤖 ยืนยันว่าไม่ใช่บอท</h2>
+            <p>กรุณาแก้โจทย์เลขด้านล่างนี้ให้ถูกต้อง</p>
+            
+            <div class="captcha-box">
+                โจทย์: <span id="captchaQuestion"></span>
+            </div>
+            <input type="number" id="captchaInput" class="auth-input" placeholder="ใส่คำตอบตัวเลข...">
+
+            <button class="auth-btn" onclick="loginShop()">เข้าสู่เว็บไซต์</button>
+        </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-box"><div class="stat-label">ผู้ใช้งาน</div><div class="stat-value">1,245 คน</div></div>
-        <div class="stat-box"><div class="stat-label">เวลาเปิดบริการ</div><div class="stat-value" style="font-size: 13px; color: #34d399;">12:30 - 19:40</div></div>
-    </div>
-    <div class="menu-grid">
-        <a href="#shop" class="menu-btn">🛍️ สินค้า</a>
-        <a href="#topup" class="menu-btn">💳 เติมเงิน</a>
-        <a href="#" class="menu-btn">❓ ช่วยเหลือ</a>
-        <a href="#" class="menu-btn">💬 ติดต่อ</a>
+    <!-- STEP 3: หน้าเว็บร้านค้าหลัก -->
+    <div id="main-shop">
+        <div class="shop-banner">
+            <h2>🔥 MINI SHOP 🔥</h2>
+            <p>ยินดีต้อนรับคุณ <span id="displayName" style="color: #34d399; font-weight: bold;"></span> | รหัส Roblox มือสอง</p>
+        </div>
+
+        <!-- ประกาศแจกรหัสฟรีคนแรก -->
+        <div class="free-banner">
+            <h3>🎉 ฉลองเปิดร้านใหม่! แจกฟรีรหัสแรก!</h3>
+            <p>สำหรับผู้โชคดีคนแรกที่เข้ามาเยี่ยมชมเว็บไซต์ รับไปเลยฟรี 1 รหัส!</p>
+            <a href="https://m.me/ponkponkatn.debug" class="free-btn" target="_blank">🎁 กดรับสิทธิ์คนแรก</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box"><div class="stat-label">ผู้ใช้งาน</div><div class="stat-value">1,245 คน</div></div>
+            <div class="stat-box"><div class="stat-label">เวลาเปิดบริการ</div><div class="stat-value" style="font-size: 13px; color: #34d399;">12:30 - 19:40</div></div>
+        </div>
+        <div class="menu-grid">
+            <a href="#shop" class="menu-btn">🛍️ สินค้า</a>
+            <a href="#topup" class="menu-btn">💳 เติมเงิน</a>
+            <a href="#" class="menu-btn">❓ ช่วยเหลือ</a>
+            <a href="https://m.me/ponkponkatn.debug" class="menu-btn" target="_blank">💬 ติดต่อ</a>
+        </div>
+
+        <!-- ช่องเติมเงินซองวอเล็ท -->
+        <div class="topup-box" id="topup">
+            <h3>💳 เติมเงินด้วยซองของขวัญ TrueMoney</h3>
+            <p style="font-size: 11px; color: #9ca3af; text-align: center; margin-bottom: 10px;">นำลิงก์ซองของขวัญจากแอป Wallet มาวางที่นี่</p>
+            <input type="text" id="giftLink" class="topup-input" placeholder="https://gift.truemoney.com/campaign/?v=...">
+            <button class="topup-btn" onclick="submitWallet()">ยืนยันการเติมเงิน</button>
+        </div>
     </div>
 
-    <!-- ช่องเติมเงินซองวอเล็ท -->
-    <div class="topup-box" id="topup">
-        <h3>💳 เติมเงินด้วยซองของขวัญ TrueMoney</h3>
-        <p style="font-size: 11px; color: #9ca3af; text-align: center; margin-bottom: 10px;">นำลิงก์ซองของขวัญจากแอป Wallet มาวางที่นี่</p>
-        <input type="text" class="topup-input" placeholder="https://gift.truemoney.com/campaign/?v=...">
-        <button class="topup-btn" onclick="alert('ระบบกำลังตรวจสอบซองวอเล็ท...')">ยืนยันการเติมเงิน</button>
-    </div>
+    <script>
+        var savedUsername = '';
+        var correctAnswer = 0;
+
+        function nextToCaptcha() {
+            var username = document.getElementById('usernameInput').value.trim();
+            if(!username) {
+                alert('กรุณากรอกชื่อผู้ใช้ก่อนครับ!');
+                return;
+            }
+            savedUsername = username;
+
+            // สุ่มเลขบวกเลขสำหรับกันบอท
+            var num1 = Math.floor(Math.random() * 10) + 1;
+            var num2 = Math.floor(Math.random() * 10) + 1;
+            correctAnswer = num1 + num2;
+            document.getElementById('captchaQuestion').innerText = num1 + ' + ' + num2 + ' = ?';
+
+            // สลับหน้าจอจากสมัคร -> ไปหน้าบอท
+            document.getElementById('register-screen').style.display = 'none';
+            document.getElementById('captcha-screen').style.display = 'flex';
+        }
+
+        function loginShop() {
+            var userCaptcha = document.getElementById('captchaInput').value.trim();
+            if(userCaptcha != correctAnswer) {
+                alert('ยืนยันตัวตนไม่ถูกต้อง! (คำตอบบวกเลขผิด)');
+                return;
+            }
+
+            // ผ่านทุกขั้นตอน เข้าสู่เว็บหลัก
+            document.getElementById('displayName').innerText = savedUsername;
+            document.getElementById('captcha-screen').style.display = 'none';
+            document.getElementById('main-shop').style.display = 'block';
+        }
+
+        function submitWallet() {
+            var link = document.getElementById('giftLink').value;
+            if(!link) {
+                alert('กรุณากรอกลิงก์ซองของขวัญก่อนครับ!');
+                return;
+            }
+            if(!link.includes('truemoney.com')) {
+                alert('ลิงก์ซองของขวัญไม่ถูกต้อง!');
+                return;
+            }
+            alert('🎉 เติมเงินสำเร็จ! ระบบกำลังตรวจสอบซอง กรุณารอรับสินค้าในแชท/กลุ่ม หรือติดต่อแอดมิน');
+            document.getElementById('giftLink').value = '';
+        }
+    </script>
 </body>
 </html>
