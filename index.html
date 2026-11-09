@@ -8,9 +8,9 @@
         body { background-color: #0b0d12; color: #ffffff; font-family: sans-serif; margin: 0; padding: 10px; }
         
         /* หน้าเว็บหลัก Script Hub โทนเขียวดำ */
-        .hub-header { text-align: center; padding: 20px 10px; background: linear-gradient(180deg, #111e18, #0b0d12); border-bottom: 1px solid #1f293d; margin-bottom: 15px; }
-        .hub-logo { font-size: 24px; font-weight: bold; color: #34d399; margin-bottom: 5px; text-shadow: 0 0 10px rgba(52,211,153,0.5); }
-        .hub-sub { color: #9ca3af; font-size: 12px; margin-bottom: 15px; }
+        .hub-header { text-align: center; padding: 30px 10px; background: linear-gradient(180deg, #111e18, #0b0d12); border-bottom: 1px solid #1f293d; margin-bottom: 20px; }
+        .hub-logo { font-size: 26px; font-weight: bold; color: #34d399; margin-bottom: 5px; text-shadow: 0 0 10px rgba(52,211,153,0.5); }
+        .hub-sub { color: #9ca3af; font-size: 12px; margin-bottom: 20px; }
         
         /* ช่องค้นหาสคริปต์ */
         .search-box { display: flex; background: #141824; border: 1px solid #10b981; border-radius: 30px; padding: 6px 12px; max-width: 320px; margin: 0 auto; align-items: center; box-shadow: 0 0 15px rgba(16,185,129,0.15); }
@@ -18,12 +18,16 @@
         .search-btn { background: #10b981; color: #0b0d12; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
 
         /* สถิติเว็บ */
-        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; text-align: center; }
+        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; text-align: center; }
         .stat-card { background: #141824; border: 1px solid #1f293d; border-radius: 10px; padding: 10px 5px; }
         .stat-num { font-size: 15px; font-weight: bold; color: #34d399; }
         .stat-label { font-size: 10px; color: #9ca3af; margin-top: 2px; }
 
-        /* หมวดหมู่ / รายการสคริปต์ยอดฮิต */
+        /* ข้อความแจ้งเตือนก่อนค้นหา */
+        .search-hint { text-align: center; color: #9ca3af; font-size: 13px; margin: 40px 0; padding: 20px; background: #141824; border-radius: 12px; border: 1px dashed #374151; }
+
+        /* หมวดหมู่ / รายการสคริปต์ (ซ่อนไว้ก่อนจนกว่าจะค้นหา) */
+        #result-section { display: none; }
         .section-title { font-size: 15px; font-weight: bold; color: #34d399; margin: 15px 0 10px 0; border-left: 3px solid #10b981; padding-left: 8px; }
         
         .script-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
@@ -40,11 +44,11 @@
     <!-- หน้าเว็บหลัก MiniScript Hub -->
     <div class="hub-header">
         <div class="hub-logo">⚡ MiniScript</div>
-        <div class="hub-sub">รวมสคริปต์ Roblox ยอดฮิต อัปเดตใหม่ล่าสุด</div>
+        <div class="hub-sub">ค้นหาชื่อเกมหรือสคริปต์ที่ต้องการใช้งาน</div>
         
         <!-- ช่องค้นหาสคริปต์ -->
         <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="Try 'Blox Fruits'...">
+            <input type="text" class="search-input" id="searchInput" placeholder="พิมพ์ชื่อเกม เช่น Blox Fruits..." onkeypress="handleKeyPress(event)">
             <button class="search-btn" onclick="searchScript()">Search</button>
         </div>
     </div>
@@ -65,50 +69,85 @@
         </div>
     </div>
 
-    <!-- รายการสคริปต์ยอดฮิต Trending (แสดงชุดเดียวไม่ซ้ำ) -->
-    <div class="section-title">🔥 TRENDING SCRIPTS</div>
-    <div class="script-grid">
-        
-        <!-- สคริปต์ที่ 1: Blox Fruits -->
-        <div class="script-card">
-            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Blox Fruits">
-            <div class="script-info">
-                <span class="script-tag">#01 BLOX FRUITS</span>
-                <h4 class="script-title">Blox Fruits - Hermanos Hub</h4>
-                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/trulyouo/Hermanos-Hub/refs/heads/main/Loader.lua\'))()')">📋 COPY SCRIPT</button>
-            </div>
-        </div>
+    <!-- ข้อความแนะนำให้ค้นหาก่อน -->
+    <div id="hintBox" class="search-hint">
+        🔍 กรุณาพิมพ์ชื่อเกมหรือสคริปต์ในช่องค้นหาด้านบน แล้วกด Search เพื่อแสดงผลสคริปต์
+    </div>
 
-        <!-- สคริปต์ที่ 2: Urban Reload -->
-        <div class="script-card">
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="Urban Reload">
-            <div class="script-info">
-                <span class="script-tag">#02 URBAN RELOAD</span>
-                <h4 class="script-title">Urban Reload - Official Script</h4>
-                <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://cdn.luaprotect.dev/u/7e871f/CqKl89tXpms_pR8i\'))()')">📋 COPY SCRIPT</button>
+    <!-- ผลลัพธ์สคริปต์ (ซ่อนไว้ จะแสดงเมื่อกดค้นหา) -->
+    <div id="result-section">
+        <div class="section-title">🔥 ผลการค้นหาสคริปต์</div>
+        <div class="script-grid" id="scriptContainer">
+            
+            <!-- สคริปต์ที่ 1: Blox Fruits -->
+            <div class="script-card" data-name="blox fruits bloxfruit">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Blox Fruits">
+                <div class="script-info">
+                    <span class="script-tag">#01 BLOX FRUITS</span>
+                    <h4 class="script-title">Blox Fruits - Hermanos Hub</h4>
+                    <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/trulyouo/Hermanos-Hub/refs/heads/main/Loader.lua\'))()')">📋 COPY SCRIPT</button>
+                </div>
             </div>
-        </div>
 
-        <!-- สคริปต์ที่ 3: Blockspin -->
-        <div class="script-card">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80" alt="Blockspin">
-            <div class="script-info">
-                <span class="script-tag">#03 BLOCKSPIN</span>
-                <h4 class="script-title">Blockspin - Hermanos Hub Loader</h4>
-                <button class="copy-btn" onclick="copyScript('getgenv().script_mode = &quot;PVP&quot;\nloadstring(game:HttpGet(\&quot;https://raw.githubusercontent.com/hermanos-dev/hermanos-hub/refs/heads/main/Loader.lua\&quot;))()')">📋 COPY SCRIPT</button>
+            <!-- สคริปต์ที่ 2: Urban Reload -->
+            <div class="script-card" data-name="urban reload">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="Urban Reload">
+                <div class="script-info">
+                    <span class="script-tag">#02 URBAN RELOAD</span>
+                    <h4 class="script-title">Urban Reload - Official Script</h4>
+                    <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://cdn.luaprotect.dev/u/7e871f/CqKl89tXpms_pR8i\'))()')">📋 COPY SCRIPT</button>
+                </div>
             </div>
-        </div>
 
+            <!-- สคริปต์ที่ 3: Blockspin -->
+            <div class="script-card" data-name="blockspin block spin">
+                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80" alt="Blockspin">
+                <div class="script-info">
+                    <span class="script-tag">#03 BLOCKSPIN</span>
+                    <h4 class="script-title">Blockspin - Hermanos Hub Loader</h4>
+                    <button class="copy-btn" onclick="copyScript('getgenv().script_mode = &quot;PVP&quot;\nloadstring(game:HttpGet(\&quot;https://raw.githubusercontent.com/hermanos-dev/hermanos-hub/refs/heads/main/Loader.lua\&quot;))()')">📋 COPY SCRIPT</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchScript();
+            }
+        }
+
         function searchScript() {
-            var keyword = document.getElementById('searchInput').value.trim();
+            var keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            var hintBox = document.getElementById('hintBox');
+            var resultSection = document.getElementById('result-section');
+            var cards = document.getElementsByClassName('script-card');
+
             if(!keyword) {
-                alert('กรุณาพิมพ์ชื่อเกมหรือสคริปต์ที่ต้องการค้นหาครับ!');
+                alert('กรุณาพิมพ์ชื่อสคริปต์หรือเกมที่ต้องการค้นหาก่อนครับ!');
                 return;
             }
-            alert('🔍 กำลังค้นหาสคริปต์: "' + keyword + '"...');
+
+            // แสดงส่วนผลลัพธ์และซ่อนกล่องแนะนำ
+            hintBox.style.display = 'none';
+            resultSection.style.display = 'block';
+
+            var foundCount = 0;
+            for (var i = 0; i < cards.length; i++) {
+                var cardName = cards[i].getAttribute('data-name');
+                if (cardName.includes(keyword) || keyword.includes('all') || keyword.includes('script')) {
+                    cards[i].style.display = 'block';
+                    foundCount++;
+                } else {
+                    cards[i].style.display = 'none';
+                }
+            }
+
+            if (foundCount === 0) {
+                alert('❌ ไม่พบสคริปต์ที่คุณค้นหา ลองใหม่อีกครั้งครับ');
+            }
         }
 
         function copyScript(scriptCode) {
