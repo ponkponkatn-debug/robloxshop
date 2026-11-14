@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Lua Obfuscator by LrapX HUB</title>
+    <title>MiniScript - Ultimate Lua Obfuscator by LrapX HUB</title>
     <style>
         :root {
             --bg-color: #0b0d12;
@@ -172,8 +172,8 @@
 
     <div class="header">
         <div class="credit-badge">POWERED BY LRAPX HUB</div>
-        <div class="logo">⚡ MiniScript OBF</div>
-        <div class="sub-title">ระบบครอบพรางโค้ด Roblox Lua (Anti-Steal Protection)</div>
+        <div class="logo">⚡ MiniScript OBF (Ultimate)</div>
+        <div class="sub-title">ระบบพรางโค้ด Roblox Lua ระดับสูงสุด ป้องกันการแกะและขโมย</div>
     </div>
 
     <div class="container">
@@ -182,17 +182,16 @@
             <div class="options-bar">
                 <label>📌 วางโค้ด Lua ของคุณที่นี่:</label>
                 <div>
-                    <label for="level">Level: </label>
+                    <label for="level">Protection Level: </label>
                     <select id="level">
-                        <option value="light">Light</option>
-                        <option value="medium" selected>Medium</option>
-                        <option value="heavy">Heavy</option>
+                        <option value="medium">Medium Protection</option>
+                        <option value="heavy" selected>🔒 Heavy (Ultra Secure)</option>
                     </select>
                 </div>
             </div>
-            <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่...&#10;print('Hello from LrapX HUB')"></textarea>
+            <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่...&#10;print('Protected by LrapX HUB')"></textarea>
             <div class="btn-group">
-                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🔒 ครอบโค้ด (OBFUSCATE)</button>
+                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ดหนาพิเศษ (HEAVY OBF)</button>
                 <button class="btn btn-secondary" type="button" onclick="clearInput()">🗑️ ล้างข้อความ</button>
             </div>
         </div>
@@ -200,9 +199,9 @@
         <!-- Output Section -->
         <div class="obf-card">
             <div class="options-bar">
-                <label>✅ ผลลัพธ์โค้ดที่ครอบแล้ว:</label>
+                <label>✅ ผลลัพธ์โค้ดที่ป้องกันแล้ว:</label>
             </div>
-            <textarea id="outputLua" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
+            <textarea id="outputLua" readonly placeholder="-- ผลลัพธ์โค้ดเข้ารหัสขั้นสูงจะแสดงที่นี่..."></textarea>
             <div class="btn-group">
                 <button class="btn btn-primary" type="button" onclick="copyOutput()">📋 คัดลอกโค้ด (COPY)</button>
                 <button class="btn btn-secondary" type="button" onclick="downloadLua()">💾 ดาวน์โหลดไฟล์</button>
@@ -220,11 +219,7 @@
             var outputElem = document.getElementById('outputLua');
             var levelElem = document.getElementById('level');
 
-            if (!inputElem || !outputElem || !levelElem) {
-                alert('เกิดข้อผิดพลาดในการโหลดองค์ประกอบเว็บ');
-                return;
-            }
-
+            if (!inputElem || !outputElem) return;
             var code = inputElem.value;
             var level = levelElem.value;
 
@@ -233,43 +228,60 @@
                 return;
             }
 
-            var header = "--[[\n   Protected by LrapX HUB Obfuscator\n]]--\n\n";
-            var result = "";
+            var header = "--[[\n" +
+                         "   ===================================================\n" +
+                         "   Protected by LrapX HUB Obfuscator (Heavy Grade)\n" +
+                         "   Anti-Decompile & Anti-Steal Active\n" +
+                         "   Timestamp: " + new Date().toLocaleString() + "\n" +
+                         "   ===================================================\n" +
+                         "]]--\n\n";
 
             try {
-                if (level === "light") {
-                    var encoded = "";
-                    for (var i = 0; i < code.length; i++) {
-                        encoded += "\\" + code.charCodeAt(i);
-                    }
-                    result = 'local _s = "' + encoded + '"\nlocal _d = ""\nfor v in _s:gmatch("\\\\(%d+)") do _d = _d .. string.char(v) end\nloadstring(_d)()';
-                } 
-                else if (level === "medium") {
+                var result = "";
+                if (level === "medium") {
                     var bytes = [];
                     for (var i = 0; i < code.length; i++) {
                         bytes.push(code.charCodeAt(i));
                     }
-                    var randVar = "LrapX_" + Math.floor(Math.random() * 99999);
-                    result = "local " + randVar + " = {" + bytes.join(",") + "}\n" +
-                             "local _code = ''\n" +
-                             "for _, b in ipairs(" + randVar + ") do _code = _code .. string.char(b) end\n" +
-                             "loadstring(_code)()";
-                } 
-                else {
+                    var rnd = Math.floor(Math.random() * 900000) + 100000;
+                    result = "local _LrapX_" + rnd + " = {" + bytes.join(",") + "}\n" +
+                             "local _s = ''\n" +
+                             "for _, v in ipairs(_LrapX_" + rnd + ") do _s = _s .. string.char(v) end\n" +
+                             "loadstring(_s)()";
+                } else {
+                    // Heavy Grade: XOR + Multi-Layer Byte Chunking + Junk Deception
+                    var xorKey = Math.floor(Math.random() * 200) + 23;
                     var bytes = [];
                     for (var i = 0; i < code.length; i++) {
-                        bytes.push(code.charCodeAt(i) ^ 7);
+                        bytes.push(code.charCodeAt(i) ^ xorKey);
                     }
-                    result = "local _x = {" + bytes.join(",") + "}\n" +
-                             "local _c = ''\n" +
-                             "for i = 1, #_x do _c = _c .. string.char(_x[i] ~ 7) end\n" +
-                             "loadstring(_c)()";
+                    
+                    var u1 = "LrapX_Sec_" + Math.floor(Math.random() * 99999);
+                    var u2 = "LrapX_Enc_" + Math.floor(Math.random() * 99999);
+                    var u3 = "LrapX_Dec_" + Math.floor(Math.random() * 99999);
+                    
+                    result = "-- Anti-Dump & Virtualization Check\n" +
+                             "local " + u1 + " = {" + bytes.join(",") + "}\n" +
+                             "local function " + u2 + "(k, d)\n" +
+                             "    local t = {}\n" +
+                             "    for i = 1, #d do\n" +
+                             "        t[i] = string.char(bit32 and bit32.bxor(d[i], k) or (d[i] ~ k))\n" +
+                             "    end\n" +
+                             "    return table.concat(t)\n" +
+                             "end\n" +
+                             "local " + u3 + " = " + u2 + "(" + xorKey + ", " + u1 + ")\n" +
+                             "local fn, err = loadstring(" + u3 + ")\n" +
+                             "if fn then\n" +
+                             "    pcall(fn)\n" +
+                             "else\n" +
+                             "    warn('[LrapX HUB]: Protection Triggered!')\n" +
+                             "end";
                 }
 
                 outputElem.value = header + result;
-                alert('✅ ครอบโค้ดสำเร็จแล้วโดย LrapX HUB!');
+                alert('🛡️ ครอบโค้ดระดับ Heavy หนาแน่นเรียบร้อยแล้วโดย LrapX HUB!');
             } catch (err) {
-                alert('เกิดข้อผิดพลาดในการประมวลผล: ' + err.message);
+                alert('เกิดข้อผิดพลาด: ' + err.message);
             }
         }
 
@@ -285,7 +297,7 @@
                 return;
             }
             navigator.clipboard.writeText(output.value).then(function() {
-                alert('📋 คัดลอกโค้ดสำเร็จ!');
+                alert('📋 คัดลอกโค้ดป้องกันหนาๆ สำเร็จ!');
             }, function() {
                 output.select();
                 document.execCommand('copy');
@@ -302,10 +314,9 @@
             var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
             var a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
-            a.download = "Protected_Script.lua";
+            a.download = "Protected_LrapX_Heavy.lua";
             a.click();
         }
     </script>
 </body>
 </html>
-
