@@ -3,160 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Roblox Script Hub</title>
-    <style>
-        body { background-color: #0b0d12; color: #ffffff; font-family: sans-serif; margin: 0; padding: 10px; }
-        
-        /* หน้าเว็บหลัก Script Hub โทนเขียวดำ */
-        .hub-header { text-align: center; padding: 30px 10px; background: linear-gradient(180deg, #111e18, #0b0d12); border-bottom: 1px solid #1f293d; margin-bottom: 20px; }
-        .hub-logo { font-size: 26px; font-weight: bold; color: #34d399; margin-bottom: 5px; text-shadow: 0 0 10px rgba(52,211,153,0.5); }
-        .hub-sub { color: #9ca3af; font-size: 12px; margin-bottom: 20px; }
-        
-        /* ช่องค้นหาสคริปต์ */
-        .search-box { display: flex; background: #141824; border: 1px solid #10b981; border-radius: 30px; padding: 6px 12px; max-width: 320px; margin: 0 auto; align-items: center; box-shadow: 0 0 15px rgba(16,185,129,0.15); }
-        .search-input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 13px; padding-left: 5px; }
-        .search-btn { background: #10b981; color: #0b0d12; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
-
-        /* สถิติเว็บ */
-        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; text-align: center; }
-        .stat-card { background: #141824; border: 1px solid #1f293d; border-radius: 10px; padding: 10px 5px; }
-        .stat-num { font-size: 15px; font-weight: bold; color: #34d399; }
-        .stat-label { font-size: 10px; color: #9ca3af; margin-top: 2px; }
-
-        /* ข้อความแจ้งเตือนก่อนค้นหา */
-        .search-hint { text-align: center; color: #9ca3af; font-size: 13px; margin: 40px 0; padding: 20px; background: #141824; border-radius: 12px; border: 1px dashed #374151; }
-
-        /* หมวดหมู่ / รายการสคริปต์ (ซ่อนไว้ก่อนจนกว่าจะค้นหา) */
-        #result-section { display: none; }
-        .section-title { font-size: 15px; font-weight: bold; color: #34d399; margin: 15px 0 10px 0; border-left: 3px solid #10b981; padding-left: 8px; }
-        
-        .script-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        .script-card { background: #141824; border: 1px solid #1f293d; border-radius: 12px; overflow: hidden; position: relative; }
-        .script-card img { width: 100%; height: 160px; object-fit: cover; }
-        .script-info { padding: 12px; }
-        .script-tag { background: #064e3b; color: #34d399; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 6px; }
-        .script-title { font-size: 14px; font-weight: bold; color: #fff; margin: 0 0 6px 0; }
-        .copy-btn { background: #10b981; color: #0b0d12; border: none; width: 100%; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    </style>
-</head>
-<body>
-
-    <!-- หน้าเว็บหลัก MiniScript Hub -->
-    <div class="hub-header">
-        <div class="hub-logo">⚡ MiniScript</div>
-        <div class="hub-sub">ค้นหาชื่อเกมหรือสคริปต์ที่ต้องการใช้งาน</div>
-        
-        <!-- ช่องค้นหาสคริปต์ -->
-        <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="พิมพ์ชื่อเกม เช่น Blox Fruits..." onkeypress="handleKeyPress(event)">
-            <button class="search-btn" onclick="searchScript()">Search</button>
-        </div>
-    </div>
-
-    <!-- แถบสถิติ -->
-    <div class="stats-bar">
-        <div class="stat-card">
-            <div class="stat-num">3</div>
-            <div class="stat-label">TOTAL SCRIPTS</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-num">3</div>
-            <div class="stat-label">CREATORS</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-num">3</div>
-            <div class="stat-label">GAMES</div>
-        </div>
-    </div>
-
-    <!-- ข้อความแนะนำให้ค้นหาก่อน -->
-    <div id="hintBox" class="search-hint">
-        🔍 กรุณาพิมพ์ชื่อเกมหรือสคริปต์ในช่องค้นหาด้านบน แล้วกด Search เพื่อแสดงผลสคริปต์
-    </div>
-
-    <!-- ผลลัพธ์สคริปต์ (ซ่อนไว้ จะแสดงเมื่อกดค้นหา) -->
-    <div id="result-section">
-        <div class="section-title">🔥 ผลการค้นหาสคริปต์</div>
-        <div class="script-grid" id="scriptContainer">
-            
-            <!-- สคริปต์ที่ 1: Blox Fruits -->
-            <div class="script-card" data-name="blox fruits bloxfruit">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80" alt="Blox Fruits">
-                <div class="script-info">
-                    <span class="script-tag">#01 BLOX FRUITS</span>
-                    <h4 class="script-title">Blox Fruits - Hermanos Hub</h4>
-                    <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://raw.githubusercontent.com/trulyouo/Hermanos-Hub/refs/heads/main/Loader.lua\'))()')">📋 COPY SCRIPT</button>
-                </div>
-            </div>
-
-            <!-- สคริปต์ที่ 2: Urban Reload -->
-            <div class="script-card" data-name="urban reload">
-                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=80" alt="Urban Reload">
-                <div class="script-info">
-                    <span class="script-tag">#02 URBAN RELOAD</span>
-                    <h4 class="script-title">Urban Reload - Official Script</h4>
-                    <button class="copy-btn" onclick="copyScript('loadstring(game:HttpGet(\'https://cdn.luaprotect.dev/u/7e871f/CqKl89tXpms_pR8i\'))()')">📋 COPY SCRIPT</button>
-                </div>
-            </div>
-
-            <!-- สคริปต์ที่ 3: Blockspin -->
-            <div class="script-card" data-name="blockspin block spin">
-                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&q=80" alt="Blockspin">
-                <div class="script-info">
-                    <span class="script-tag">#03 BLOCKSPIN</span>
-                    <h4 class="script-title">Blockspin - Hermanos Hub Loader</h4>
-                    <button class="copy-btn" onclick="copyScript('getgenv().script_mode = &quot;PVP&quot;\nloadstring(game:HttpGet(\&quot;https://raw.githubusercontent.com/hermanos-dev/hermanos-hub/refs/heads/main/Loader.lua\&quot;))()')">📋 COPY SCRIPT</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
+    <title>MiniScript - Lua Obfuscator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <script>
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                searchScript();
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#0b0d12',
+                            card: '#141824',
+                            border: '#1f293d',
+                            green: '#10b981',
+                            neon: '#34d399',
+                            darkGreen: '#064e3b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
             }
         }
+    </script>
+    <style>
+        body {
+            background-color: #0b0d12;
+            color: #ffffff;
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+        }
+        .glow-box {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0d12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f293d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-brand-green selection:text-black">
 
-        function searchScript() {
-            var keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-            var hintBox = document.getElementById('hintBox');
-            var resultSection = document.getElementById('result-section');
-            var cards = document.getElementsByClassName('script-card');
+    <!-- Header / Navbar -->
+    <header class="border-b border-brand-border bg-gradient-to-b from-[#111e18] to-brand-bg px-4 py-4 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="https://ponkponkatn-debug.github.io/robloxshop/" target="_blank" class="flex items-center space-x-2 text-brand-neon hover:opacity-80 transition">
+                    <i class="fa-solid fa-bolt text-xl"></i>
+                    <span class="text-xl font-bold tracking-wider glow-text">MiniScript</span>
+                </a>
+                <span class="bg-brand-darkGreen text-brand-neon text-xs px-2.5 py-1 rounded-full font-semibold border border-brand-green/30">
+                    LUA OBFUSCATOR
+                </span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="https://ponkponkatn-debug.github.io/robloxshop/" target="_blank" class="text-xs sm:text-sm text-gray-400 hover:text-brand-neon transition flex items-center gap-1">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="hidden sm:inline">หน้าหลัก Script Hub</span>
+                </a>
+            </div>
+        </div>
+    </header>
 
-            if(!keyword) {
-                alert('กรุณาพิมพ์ชื่อสคริปต์หรือเกมที่ต้องการค้นหาก่อนครับ!');
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-in-out bg-brand-card border border-brand-green text-brand-neon px-4 py-3 rounded-lg shadow-xl flex items-center space-x-2">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toast-msg" class="text-sm font-medium">คัดลอกโค้ดเรียบร้อยแล้ว!</span>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+        <!-- Title Banner -->
+        <div class="text-center py-4 space-y-2">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                เครื่องมือซ่อนโค้ดสคริปต์ <span class="text-brand-neon glow-text">Roblox Lua</span>
+            </h1>
+            <p class="text-xs md:text-sm text-gray-400 max-w-xl mx-auto">
+                ป้องกันการแกะสคริปต์ (Anti-Decompile) เพิ่มความปลอดภัยให้โค้ด Lua ของคุณก่อนนำไปใช้งานบน MiniScript
+            </p>
+        </div>
+
+        <!-- Settings Bar -->
+        <div class="bg-brand-card border border-brand-border rounded-xl p-4 glow-box grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <!-- Preset Selection -->
+            <div>
+                <label class="block text-xs font-semibold text-brand-neon uppercase tracking-wider mb-1">
+                    <i class="fa-solid fa-shield-halved mr-1"></i> ระดับการพรางโค้ด (Protection Level)
+                </label>
+                <select id="obfPreset" class="w-full bg-brand-bg border border-brand-border rounded-lg px-3 py-2 text-xs md:text-sm text-gray-200 focus:outline-none focus:border-brand-green transition">
+                    <option value="light">Light - Encode String (ความเร็วสูง สคริปต์สั้น)</option>
+                    <option value="medium" selected>Medium - Rename Vars & Table Pack (แนะนำ)</option>
+                    <option value="heavy">Heavy - Full Protection & Anti-Decompile (แน่นหนา)</option>
+                </select>
+            </div>
+
+            <!-- Extra Options -->
+            <div class="flex items-center space-x-4 md:justify-center">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="addWatermark" checked class="sr-only peer">
+                    <div class="w-9 h-5 bg-brand-bg peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-green relative"></div>
+                    <span class="ml-2 text-xs text-gray-300">ใส่เครดิต MiniScript</span>
+                </label>
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="antiTamper" class="sr-only peer">
+                    <div class="w-9 h-5 bg-brand-bg peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-green relative"></div>
+                    <span class="ml-2 text-xs text-gray-300">Anti-Print Debug</span>
+                </label>
+            </div>
+
+            <!-- Action Button -->
+            <div class="flex justify-end">
+                <button id="obfuscateBtn" onclick="processObfuscation()" class="w-full md:w-auto bg-gradient-to-r from-brand-green to-emerald-600 hover:from-emerald-400 hover:to-brand-green text-brand-bg font-bold px-6 py-2.5 rounded-lg transition transform active:scale-95 shadow-lg flex items-center justify-center space-x-2 text-sm">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>ทำการครอบโค้ด (OBFUSCATE)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Editor Workarea (Grid) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- INPUT BOX -->
+            <div class="bg-brand-card border border-brand-border rounded-xl overflow-hidden flex flex-col h-[480px]">
+                <!-- Header Controls -->
+                <div class="bg-[#0f121b] border-b border-brand-border px-4 py-2.5 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-code text-brand-neon text-xs"></i>
+                        <span class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Raw Lua Input (โค้ดต้นฉบับ)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="loadSampleCode()" class="text-xs text-brand-neon hover:underline mr-2">
+                            <i class="fa-solid fa-lightbulb"></i> ตัวอย่างโค้ด
+                        </button>
+                        <button onclick="clearInput()" class="text-xs text-gray-400 hover:text-red-400 transition" title="ล้างข้อความ">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Textarea Area -->
+                <div class="flex-1 relative font-mono text-xs flex">
+                    <textarea id="luaInput" spellcheck="false" placeholder="วางโค้ด Lua ของคุณที่นี่..." 
+                        class="w-full h-full bg-brand-bg p-3 text-gray-200 resize-none focus:outline-none leading-relaxed selection:bg-brand-green/30"
+                        oninput="updateInputStats()"></textarea>
+                </div>
+                <!-- Input Footer Stats -->
+                <div class="bg-[#0f121b] border-t border-brand-border px-4 py-1.5 flex justify-between items-center text-[11px] text-gray-400">
+                    <span id="inputCharCount">0 ตัวอักษร</span>
+                    <span id="inputLineCount">1 บรรทัด</span>
+                </div>
+            </div>
+
+            <!-- OUTPUT BOX -->
+            <div class="bg-brand-card border border-brand-border rounded-xl overflow-hidden flex flex-col h-[480px]">
+                <!-- Header Controls -->
+                <div class="bg-[#0f121b] border-b border-brand-border px-4 py-2.5 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-cat text-brand-neon text-xs"></i>
+                        <span class="text-xs font-semibold text-gray-300 uppercase tracking-wider">Obfuscated Output (โค้ดที่พรางแล้ว)</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="copyOutput()" class="text-xs bg-brand-darkGreen border border-brand-green/40 text-brand-neon px-2.5 py-1 rounded hover:bg-brand-green hover:text-brand-bg transition flex items-center space-x-1">
+                            <i class="fa-solid fa-copy"></i>
+                            <span>คัดลอก (Copy)</span>
+                        </button>
+                        <button onclick="downloadOutput()" class="text-xs bg-brand-border text-gray-300 px-2.5 py-1 rounded hover:bg-gray-700 transition flex items-center space-x-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span>ดาวน์โหลด</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Textarea Output -->
+                <div class="flex-1 relative font-mono text-xs flex">
+                    <textarea id="luaOutput" readonly spellcheck="false" placeholder="ผลลัพธ์การครอบโค้ดจะปรากฏที่นี่..." 
+                        class="w-full h-full bg-[#07090e] p-3 text-brand-neon resize-none focus:outline-none leading-relaxed"></textarea>
+                </div>
+                <!-- Output Footer Stats -->
+                <div class="bg-[#0f121b] border-t border-brand-border px-4 py-1.5 flex justify-between items-center text-[11px] text-gray-400">
+                    <span id="outputCharCount">0 ตัวอักษร</span>
+                    <span id="ratioStats" class="text-brand-neon">พร้อมทำงาน</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Instruction / Info Box -->
+        <div class="bg-brand-card border border-brand-border rounded-xl p-4 text-xs text-gray-400 space-y-2">
+            <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-info text-brand-neon"></i> ข้อแนะนำสำหรับการใช้งาน
+            </h3>
+            <ul class="list-disc list-inside space-y-1 pl-1">
+                <li>นำโค้ดที่ครอบแล้วไปใส่ในไฟล์สคริปต์ของคุณ แล้วทดสอบกับ Roblox Executor (เช่น Delta, Fluxus, Codex, Wave) ก่อนแจกจ่ายจริง</li>
+                <li>ระดับ <b class="text-gray-200">Medium / Heavy</b> จะทำให้การแกะโค้ดด้วยโปรแกรม Decompiler ยอดฮิตใน Roblox ทำได้ยากขึ้นมาก</li>
+                <li>หากสคริปต์มีขนาดใหญ่มาก การครอบโค้ดอาจใช้เวลาเพิ่มขึ้นเล็กน้อย</li>
+            </ul>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-brand-border py-4 text-center text-xs text-gray-500 mt-6">
+        <p>© 2026 MiniScript Tool Hub. Powered by Admin Ban.</p>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // Sample Code Loader
+        function loadSampleCode() {
+            const sample = `-- MiniScript Test Script
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+
+local function notifyUser(text)
+    print("[MiniScript] " .. text)
+end
+
+notifyUser("สคริปต์ทำงานสำเร็จแล้ว! สวัสดี " .. Player.Name)`;
+            document.getElementById('luaInput').value = sample;
+            updateInputStats();
+            showToast('โหลดโค้ดตัวอย่างเรียบร้อย', 'info');
+        }
+
+        // Input Statistics Updater
+        function updateInputStats() {
+            const val = document.getElementById('luaInput').value;
+            const chars = val.length;
+            const lines = val ? val.split('\n').length : 1;
+            document.getElementById('inputCharCount').innerText = `${chars} ตัวอักษร`;
+            document.getElementById('inputLineCount').innerText = `${lines} บรรทัด`;
+        }
+
+        // Toast Notification
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+            if (type === 'error') {
+                toastIcon.className = 'fa-solid fa-circle-exclamation text-lg text-red-400';
+                toast.className = toast.className.replace('border-brand-green', 'border-red-500');
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-check text-lg text-brand-neon';
+                toast.className = toast.className.replace('border-red-500', 'border-brand-green');
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // Clear Function
+        function clearInput() {
+            document.getElementById('luaInput').value = '';
+            document.getElementById('luaOutput').value = '';
+            updateInputStats();
+            document.getElementById('outputCharCount').innerText = '0 ตัวอักษร';
+            document.getElementById('ratioStats').innerText = 'พร้อมทำงาน';
+            showToast('ล้างข้อมูลเรียบร้อย', 'info');
+        }
+
+        // Copy Function
+        function copyOutput() {
+            const outputText = document.getElementById('luaOutput').value;
+            if (!outputText) {
+                showToast('ไม่มีโค้ดให้คัดลอก!', 'error');
                 return;
             }
 
-            // แสดงส่วนผลลัพธ์และซ่อนกล่องแนะนำ
-            hintBox.style.display = 'none';
-            resultSection.style.display = 'block';
-
-            var foundCount = 0;
-            for (var i = 0; i < cards.length; i++) {
-                var cardName = cards[i].getAttribute('data-name');
-                if (cardName.includes(keyword) || keyword.includes('all') || keyword.includes('script')) {
-                    cards[i].style.display = 'block';
-                    foundCount++;
-                } else {
-                    cards[i].style.display = 'none';
+            // Fallback for clipboard copy
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(outputText).then(() => {
+                    showToast('คัดลอกโค้ดพรางเรียบร้อย!');
+                });
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = outputText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('คัดลอกโค้ดพรางเรียบร้อย!');
+                } catch (err) {
+                    showToast('ไม่สามารถคัดลอกได้', 'error');
                 }
-            }
-
-            if (foundCount === 0) {
-                alert('❌ ไม่พบสคริปต์ที่คุณค้นหา ลองใหม่อีกครั้งครับ');
+                document.body.removeChild(textArea);
             }
         }
 
-        function copyScript(scriptCode) {
-            navigator.clipboard.writeText(scriptCode).then(function() {
-                alert('✅ คัดลอกสคริปต์สำเร็จ! นำไปรันในเกม Roblox ได้เลย');
-            }, function() {
-                alert('คัดลอกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
-            });
+        // Download Function
+        function downloadOutput() {
+            const outputText = document.getElementById('luaOutput').value;
+            if (!outputText) {
+                showToast('ไม่มีโค้ดให้ดาวน์โหลด!', 'error');
+                return;
+            }
+            const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'obfuscated_miniscript.lua';
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast('ดาวน์โหลดไฟล์เรียบร้อย!');
         }
-    </script>
-</body>
-</html>
+
+        // Helper to randomize variable names
+        function generateRandomName(length = 8) {
+            const chars = 'Il1O0_';
+            let res = '_0x';
+            for (let i = 0; i < length; i++) {
+                res += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return res;
+        }
+
+        // Encode string to Bytecode Escape Format (\xxx)
+        function encodeStringToByteCode(str) {
+            let res = '';
+            for (let i = 0; i < str.length; i++) {
+                res += '\\' + str.charCodeAt(i);
+            }
+            return res;
+        }
+
+        // Core Obfuscator Processor Algorithm
+        function processObfuscation() {
+            const rawCode = document.getElementById('luaInput').value.trim();
+            if (!rawCode) {
+                showToast('กรุณากรอกหรือวางโค้ด Lua ก่อน!', 'error');
+                return;
+            }
+
+            const level = document.getElementById('obfPreset').value;
+            const addWatermark = document.getElementById('addWatermark').checked;
+            const antiTamper = document.getElementById('antiTamper').checked;
+
+            let result = '';
+
+            // Header Credit
+            if (addWatermark) {
+                result += `--[[ \n   Protected by MiniScript Lua Obfuscator\n   Website: https://ponkponkatn-debug.github.io/robloxshop/\n--]]\n\n`;
+            }
+
+            if (antiTamper) {
+                result += `if print then local _p=print print=function(...) end end\n`;
+            }
+
+            if (level === 'light') {
+                // LIGHT OBFUSCATION: String Bytecode Encoding Wrapper
+                const encodedBytes = [];
+                for (let i = 0; i < rawCode.length; i++) {
+                    encodedBytes.push(rawCode.charCodeAt(i));
+                }
+                const vTable = generateRandomName(6);
+                const vStr = generateRandomName(6);
+                const vI = generateRandomName(4);
+
+                result += `local ${vTable} = {${encodedBytes.join(',')}}\n`;
+                result += `local ${vStr} = ""\n`;
+                result += `for ${vI} = 1, #${vTable} do\n`;
+                result += `    ${vStr} = ${vStr} .. string.char(${vTable}[${vI}])\n`;
+                result += `end\n`;
+                result += `local _func = loadstring || load\n`;
+                result += `_func(${vStr})()`;
+
+            } else if (level === 'medium') {
+                // MEDIUM OBFUSCATION: Table Packaging & Variable Obfuscation
+                const strMap = [];
+                let modifiedCode = rawCode.replace(/"(.*?)"|'(.*?)'/g, (match, p1, p2) => {
+                    const strContent = p1 !== undefined ? p1 : p2;
+                    const idx = strMap.length + 1;
+                    strMap.push(encodeStringToByteCode(strContent));
+                    return `_S[${idx}]`;
+                });
+
+                const tableName = generateRandomName(8);
+                const loadName 
