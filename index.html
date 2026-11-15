@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Safe & Heavy Lua Obfuscator by LrapX HUB</title>
+    <title>MiniScript - Pro Lua Obfuscator by LrapX HUB</title>
     <style>
         :root {
             --bg-color: #0b0d12;
@@ -172,8 +172,8 @@
 
     <div class="header">
         <div class="credit-badge">POWERED BY LRAPX HUB</div>
-        <div class="logo">⚡ MiniScript OBF (Compatible)</div>
-        <div class="sub-title">ระบบครอบโค้ดความปลอดภัยสูง รองรับทุกตัวรันบนมือถือ 100%</div>
+        <div class="logo">⚡ MiniScript OBF (Pro Stable)</div>
+        <div class="sub-title">ระบบครอบโค้ดเสถียรสูง รองรับสคริปต์ยาวและรันติดชัวร์ 100%</div>
     </div>
 
     <div class="container">
@@ -184,13 +184,13 @@
                 <div>
                     <label for="level">Protection Level: </label>
                     <select id="level">
-                        <option value="safe" selected>🔒 Heavy (Executor Safe)</option>
+                        <option value="stable" selected>🔒 Pro Stable (Recommended)</option>
                     </select>
                 </div>
             </div>
             <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่...&#10;print('Hello from LrapX HUB')"></textarea>
             <div class="btn-group">
-                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (SAFE OBF)</button>
+                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (PRO OBF)</button>
                 <button class="btn btn-secondary" type="button" onclick="clearInput()">🗑️ ล้างข้อความ</button>
             </div>
         </div>
@@ -227,38 +227,33 @@
 
             var header = "--[[\n" +
                          "   ===================================================\n" +
-                         "   Protected by LrapX HUB Obfuscator (Safe Grade)\n" +
-                         "   Anti-Steal & Mobile Executor Compatible\n" +
+                         "   Protected by LrapX HUB Obfuscator (Pro Stable)\n" +
+                         "   Anti-Steal & High Compatibility Active\n" +
                          "   Timestamp: " + new Date().toLocaleString() + "\n" +
                          "   ===================================================\n" +
                          "]]--\n\n";
 
             try {
-                // แปลงโค้ดเป็น ASCII Byte Array แบบมาตรฐานที่ทุก Lua VM / Executor อ่านออกแน่นอน
-                var bytes = [];
+                // แปลงโค้ดเป็นระบบ Hex/String Escape ป้องกันปัญหาขนาดตารางเต็ม
+                var encoded = "";
                 for (var i = 0; i < code.length; i++) {
-                    bytes.push(code.charCodeAt(i));
+                    var hex = code.charCodeAt(i).toString(16);
+                    if (hex.length < 2) hex = "0" + hex;
+                    encoded += "\\x" + hex;
                 }
 
-                var rndVar1 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
-                var rndVar2 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
-                var rndVar3 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
-
-                var result = "local " + rndVar1 + " = {" + bytes.join(",") + "}\n" +
-                             "local " + rndVar2 + " = {}\n" +
-                             "for i = 1, #" + rndVar1 + " do\n" +
-                             "    " + rndVar2 + "[i] = string.char(" + rndVar1 + "[i])\n" +
-                             "end\n" +
-                             "local " + rndVar3 + " = table.concat(" + rndVar2 + ")\n" +
-                             "local fn, err = loadstring(" + rndVar3 + ")\n" +
+                var varName = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
+                
+                var result = "local " + varName + " = \"" + encoded + "\"\n" +
+                             "local fn, err = loadstring(" + varName + ")\n" +
                              "if fn then\n" +
                              "    pcall(fn)\n" +
                              "else\n" +
-                             "    warn('[LrapX HUB]: Script Execution Error: ' .. tostring(err))\n" +
+                             "    warn('[LrapX HUB]: Load Error: ' .. tostring(err))\n" +
                              "end";
 
                 outputElem.value = header + result;
-                alert('🛡️ ครอบโค้ดแบบปลอดภัย รันติดทุกตัวรันสำเร็จ!');
+                alert('🛡️ ครอบโค้ดแบบ Pro Stable สำเร็จ รันติดแน่นอน!');
             } catch (err) {
                 alert('เกิดข้อผิดพลาด: ' + err.message);
             }
@@ -293,7 +288,7 @@
             var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
             var a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
-            a.download = "Protected_LrapX_Safe.lua";
+            a.download = "Protected_LrapX_Pro.lua";
             a.click();
         }
     </script>
