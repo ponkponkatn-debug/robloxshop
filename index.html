@@ -71,7 +71,7 @@
             border: 1px solid rgba(52, 211, 153, 0.35);
             border-radius: 12px;
             padding: 12px 16px;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -135,7 +135,7 @@
         }
 
         .btn {
-            width: 100%;
+            flex: 1;
             padding: 12px;
             border: none;
             border-radius: 10px;
@@ -194,6 +194,11 @@
             font-weight: 700;
         }
 
+        .history-fail {
+            color: #fca5a5;
+            font-weight: 700;
+        }
+
         .history-meta {
             color: var(--text-muted);
             font-size: 11px;
@@ -230,7 +235,7 @@
         <div class="header">
             <div class="credit-badge">POWERED BY LRAPX HUB</div>
             <div class="logo">MiniScript <span>ONE-PAGE</span></div>
-            <div class="sub-title">แลกโค้ด • สุ่มรหัสเกม • ยืนยันคีย์ • รับสคริปต์ ในหน้าเดียว</div>
+            <div class="sub-title">แลกโค้ด • สุ่มรหัสเกม (หักเงิน + มีได้/ไม่ได้) • ยืนยันคีย์ • รับสคริปต์</div>
         </div>
 
         <div id="debugError" class="debug-box"></div>
@@ -249,13 +254,13 @@
 
         <div class="card">
             <div class="card-header">
-                <span>2. สุ่มรหัสเกม (Game Code Gacha)</span>
+                <span>2. สุ่มรหัสเกม (ค่าสุ่มครั้งละ 10 บาท • มีโอกาสได้/ไม่ได้)</span>
             </div>
             <div class="btn-row">
-                <button type="button" class="btn btn-primary" onclick="rollGameCode()">สุ่มรหัสเกมเลย</button>
+                <button type="button" class="btn btn-primary" onclick="rollGameCode()">สุ่มรหัสเกม (-10 บาท)</button>
                 <button type="button" class="btn btn-secondary" onclick="clearHistory()">ล้างประวัติ</button>
             </div>
-            <div id="gameCodeBox" class="result-box">กด "สุ่มรหัสเกมเลย" เพื่อรับรหัส...</div>
+            <div id="gameCodeBox" class="result-box">กด "สุ่มรหัสเกม (-10 บาท)" เพื่อสุ่ม (มีได้กับไม่ได้)...</div>
 
             <div class="card-header" style="margin-top: 16px; margin-bottom: 6px;">
                 <span>หน้าประวัติการสุ่ม (Random History)</span>
@@ -293,9 +298,11 @@
         var INGAME_WEBHOOK = "https://discord.com/api/webhooks/1571494413086228570/1hSK3jR-iBtQAKp-RhZ5Z4shO1to9mEFA9PL6FDB8_fV0xNYE22NK0CJxAlhZIp-d8PT";
         var BALANCE_KEY = "lrapx_site_balance_baht";
         var HISTORY_KEY = "lrapx_game_random_history";
+        var USED_1000_KEY = "lrapx_used_payheeshop1000";
         var BAHT1_CODE = "BAHT1-LRAPX";
         var RANDOM50_CODE = "BAHT250-LRAPX";
         var BAHT1000_CODE = "PAYHEESHOP1000";
+        var GACHA_COST = 10;
 
         var SAMPLE_GAME_CODES = [
             "sjdudjus:6282828",
@@ -322,7 +329,26 @@
 
         var memoryBalance = 0;
         var memoryHistory = [];
+        var memoryUsed1000 = false;
         var isKeyActivated = false;
+
+        function hasUsed1000Code() {
+            if (memoryUsed1000) return true;
+            try {
+                if (localStorage.getItem(USED_1000_KEY) === "1") {
+                    memoryUsed1000 = true;
+                    return true;
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function markUsed1000Code() {
+            memoryUsed1000 = true;
+            try {
+                localStorage.setItem(USED_1000_KEY, "1");
+            } catch (e) {}
+        }
 
         function getBalance() {
             try {
@@ -333,12 +359,13 @@
         }
 
         function setBalance(amount) {
-            memoryBalance = parseInt(amount, 10) || 0;
+            var safeAmount = Math.max(0, parseInt(amount, 10) || 0);
+            memoryBalance = safeAmount;
             try {
-                localStorage.setItem(BALANCE_KEY, String(memoryBalance));
+                localStorage.setItem(BALANCE_KEY, String(safeAmount));
             } catch (e) {}
             var el = document.getElementById("siteBalance");
-            if (el) el.textContent = memoryBalance + " บาท";
+            if (el) el.textContent = safeAmount + " บาท";
         }
 
         function getHistory() {
@@ -368,10 +395,15 @@
             var html = "";
             for (var i = 0; i < list.length; i++) {
                 var item = list[i];
+                var isWin = !!item.won;
+                var codeClass = isWin ? "history-code" : "history-fail";
+                var copyBtn = isWin
+                    ? '<button type="button" class="mini-copy-btn" onclick="copyText(\'' + item.code + '\')">คัดลอก</button>'
+                    : '';
                 html += '<div class="history-item">' +
-                    '<div><div class="history-code">' + item.code + '</div>' +
-                    '<div class="history-meta">#' + (list.length - i) + ' • ' + item.time + '</div></div>' +
-                    '<button type="button" class="mini-copy-btn" onclick="copyText(\'' + item.code + '\')">คัดลอก</button>' +
+                    '<div><div class="' + codeClass + '">' + item.label + '</div>' +
+                    '<div class="history-meta">#' + (list.length - i) + ' • หัก ' + GACHA_COST + ' บาท • ' + item.time + '</div></div>' +
+                    copyBtn +
                     '</div>';
             }
             container.innerHTML = html;
@@ -391,15 +423,40 @@
         }
 
         function rollGameCode() {
-            var code = generateSimulatedGameCode();
+            var currentBalance = getBalance();
+            if (currentBalance < GACHA_COST) {
+                document.getElementById("gameCodeBox").textContent = "ยอดเงินในเว็บไม่พอ (ต้องใช้ครั้งละ " + GACHA_COST + " บาท | ยอดคงเหลือ: " + currentBalance + " บาท)";
+                alert("ยอดเงินในเว็บไม่พอสุ่มครับ (ต้องมีอย่างน้อย " + GACHA_COST + " บาท)");
+                return;
+            }
+
+            // หักเงินในเว็บครั้งละ 10 บาทเมื่อกดสุ่ม
+            var afterCost = currentBalance - GACHA_COST;
+            setBalance(afterCost);
+
             var nowText = new Date().toLocaleString();
-            document.getElementById("gameCodeBox").textContent = "สุ่มได้รหัสเกม:\n" + code + "\nเวลา: " + nowText;
+            var wonCode = Math.random() < 0.5; // โอกาสได้ 50% / ไม่ได้ 50%
 
-            var current = getHistory().slice();
-            current.unshift({ code: code, time: nowText });
-            saveHistory(current.slice(0, 30));
+            if (wonCode) {
+                var code = generateSimulatedGameCode();
+                document.getElementById("gameCodeBox").textContent =
+                    "สุ่มได้รหัสเกม (หัก -" + GACHA_COST + " บาท):\n" + code + "\nยอดเงินคงเหลือ: " + afterCost + " บาท\nเวลา: " + nowText;
 
-            sendToDiscord("มีคนสุ่มรหัสเกมบนเว็บ", "• รหัสที่ได้: `" + code + "`\n• เวลา: " + nowText);
+                var current = getHistory().slice();
+                current.unshift({ won: true, code: code, label: code, time: nowText });
+                saveHistory(current.slice(0, 30));
+
+                sendToDiscord("สุ่มรหัสเกมได้สำเร็จ (หัก " + GACHA_COST + " บาท)", "• รหัสที่ได้: `" + code + "`\n• ยอดคงเหลือ: " + afterCost + " บาท");
+            } else {
+                document.getElementById("gameCodeBox").textContent =
+                    "สุ่มรอบนี้ไม่ได้รหัสเกม (หัก -" + GACHA_COST + " บาท)\nยอดเงินคงเหลือ: " + afterCost + " บาท\nเวลา: " + nowText;
+
+                var currentFail = getHistory().slice();
+                currentFail.unshift({ won: false, code: "", label: "ไม่ได้รหัสเกม (วืด)", time: nowText });
+                saveHistory(currentFail.slice(0, 30));
+
+                sendToDiscord("สุ่มรหัสเกมไม่ได้ (หัก " + GACHA_COST + " บาท)", "• ผลลัพธ์: ไม่ได้รหัสเกม\n• ยอดคงเหลือ: " + afterCost + " บาท");
+            }
         }
 
         function clearHistory() {
@@ -460,84 +517,29 @@
             var lower = code.toLowerCase();
 
             if (upper === BAHT1000_CODE) {
-                var newBalance1000 = getBalance() + 1000;
-                setBalance(newBalance1000);
-                display.textContent = "แลกโค้ด Payheeshop1000 สำเร็จ ได้รับเงิน +1000 บาท (เฉพาะในเว็บนี้)\nยอดสะสมปัจจุบัน: " + newBalance1000 + " บาท";
-                sendToDiscord("มีคนแลกโค้ด 1000 บาทบนเว็บ", "• โค้ด: `Payheeshop1000`\n• ได้รับ: +1000 บาท\n• ยอดรวม: " + newBalance1000 + " บาท");
-                alert("ได้รับ +1000 บาทในเว็บนี้แล้ว ยอดรวม: " + newBalance1000 + " บาท");
+                if (hasUsed1000Code()) {
+                    display.textContent = "โค้ด Payheeshop1000 ถูกใช้ไปแล้ว (จำกัด 1 ครั้งต่อเครื่อง)";
+                    alert("โค้ด Payheeshop1000 ใช้ได้แค่ 1 ครั้งต่อเครื่องครับ");
+                    return;
+                }
+                markUsed1000Code();
+                var got1000 = Math.random() < 0.5;
+                if (got1000) {
+                    var newBalance1000 = getBalance() + 1000;
+                    setBalance(newBalance1000);
+                    display.textContent = "สุ่มโค้ด Payheeshop1000 ได้รับเงิน +1,000 บาท\nยอดสะสมปัจจุบัน: " + newBalance1000 + " บาท";
+                    sendToDiscord("สุ่ม Payheeshop1000 ได้เงิน", "• ผลลัพธ์: ได้ +1,000 บาท\n• ยอดรวม: " + newBalance1000 + " บาท");
+                    alert("ได้ +1,000 บาท ยอดรวม: " + newBalance1000 + " บาท");
+                } else {
+                    display.textContent = "สุ่มโค้ด Payheeshop1000 แล้วไม่ได้เงิน (+0 บาท) และสิทธิ์ถูกใช้ไปแล้ว\nยอดสะสมปัจจุบัน: " + getBalance() + " บาท";
+                    sendToDiscord("สุ่ม Payheeshop1000 ไม่ได้เงิน", "• ผลลัพธ์: ไม่ได้ (0 บาท)\n• ยอดรวม: " + getBalance() + " บาท");
+                    alert("รอบนี้ไม่ได้เงินครับ (+0 บาท)");
+                }
                 return;
             }
 
             if (upper === RANDOM50_CODE) {
-                var randomReward = Math.floor(Math.random() * 50) + 1;
-                var newBalance = getBalance() + randomReward;
-                setBalance(newBalance);
-                display.textContent = "สุ่มโค้ด " + RANDOM50_CODE + " สำเร็จ ได้รับเงิน +" + randomReward + " บาท (สุ่ม 1-50 บาท เฉพาะในเว็บนี้)\nยอดสะสมปัจจุบัน: " + newBalance + " บาท";
-                sendToDiscord("มีคนสุ่มโค้ดรับเงินสูงสุด 50 บาทบนเว็บ", "• โค้ด: `" + RANDOM50_CODE + "`\n• ได้รับ: +" + randomReward + " บาท\n• ยอดรวม: " + newBalance + " บาท");
-                alert("สุ่มได้ +" + randomReward + " บาทในเว็บนี้ ยอดรวม: " + newBalance + " บาท");
-                return;
-            }
-
-            if (upper === BAHT1_CODE) {
-                var newBalance1 = getBalance() + 1;
-                setBalance(newBalance1);
-                display.textContent = "แลกโค้ด " + BAHT1_CODE + " สำเร็จ ได้รับเงิน +1 บาท (เฉพาะในเว็บนี้)\nยอดสะสมปัจจุบัน: " + newBalance1 + " บาท";
-                sendToDiscord("มีคนแลกโค้ด 1 บาทบนเว็บ", "• โค้ด: `" + BAHT1_CODE + "`\n• ยอดรวม: " + newBalance1 + " บาท");
-                alert("ได้รับ +1 บาทในเว็บนี้แล้ว ยอดรวม: " + newBalance1 + " บาท");
-                return;
-            }
-
-            if (lower === "vip2026") {
-                var generatedKey = "LrapX-VIP-2026-FREE";
-                display.textContent = "แลกคูปอง vip2026 สำเร็จ คีย์ฟรี 1 วันของคุณคือ:\n" + generatedKey + "\n\nนำคีย์นี้ไปวางในข้อ 3 ด้านล่าง";
-                sendToDiscord("มีผู้ใช้แลกคูปอง vip2026", "• คีย์ที่ได้: `" + generatedKey + "`");
-                alert("ได้รับคีย์ฟรี 1 วันเรียบร้อย นำไปใส่ในข้อ 3 ต่อได้เลย");
-                return;
-            }
-
-            display.textContent = "โค้ดไม่ถูกต้อง";
-            alert("โค้ดไม่ถูกต้อง");
-        }
-
-        function redeemKey() {
-            var inputKey = document.getElementById("keyInput").value.trim();
-            var status = document.getElementById("redeemStatus");
-
-            if (inputKey === "LrapX-VIP-2026-FREE" || inputKey.indexOf("LrapX-") === 0) {
-                isKeyActivated = true;
-                status.textContent = "ยืนยันคีย์สำเร็จ\nKey: " + inputKey + "\nเลื่อนลงไปกด Get Script ที่ข้อ 4 ได้เลย";
-                sendToDiscord("มีผู้ยืนยันคีย์สำเร็จ", "• คีย์: `" + inputKey + "`");
-                alert("ยืนยันคีย์สำเร็จ");
-            } else {
-                isKeyActivated = false;
-                status.textContent = "คีย์ไม่ถูกต้อง";
-                alert("คีย์ไม่ถูกต้อง");
-            }
-        }
-
-        function verifyAndGetScript() {
-            var scriptBox = document.getElementById("scriptBox");
-            if (isKeyActivated) {
-                scriptBox.value = REAL_LUA_SCRIPT;
-                alert("ดึงสคริปต์เรียบร้อย");
-            } else {
-                scriptBox.value = "";
-                alert("กรุณายืนยันคีย์ที่ข้อ 3 ก่อนกด Get Script ครับ");
-            }
-        }
-
-        function copyScript() {
-            var box = document.getElementById("scriptBox");
-            if (!box.value) {
-                alert("ยังไม่มีสคริปต์ให้คัดลอกครับ");
-                return;
-            }
-            copyText(box.value);
-        }
-
-        setBalance(getBalance());
-        renderHistory();
-    </script>
-</body>
-</html>
-
+                var won50 = Math.random() < 0.6;
+                if (!won50) {
+                    display.textContent = "สุ่มโค้ด " + RANDOM50_CODE + " แล้วไม่ได้เงิน (+0 บาท)\nยอดสะสมปัจจุบัน: " + getBalance() + " บาท";
+                    sendToDiscord("สุ่ม " + RANDOM50
