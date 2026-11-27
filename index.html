@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สุ่มรหัสได้/ไม่ได้ - LrapX HUB</title>
+    <title>LrapX HUB - โค้ดตังค์ & สุ่มรหัส 50 บาท</title>
     <style>
         body {
             background: radial-gradient(circle at top, #0f172a 0%, #07090e 100%);
@@ -20,7 +20,7 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .logo {
             font-size: 26px;
@@ -35,8 +35,25 @@
             font-size: 13px;
             margin-top: 6px;
         }
+        .wallet-bar {
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .wallet-val {
+            color: #34d399;
+            font-size: 18px;
+            font-family: monospace;
+        }
         .card {
-            background: rgba(20, 24, 36, 0.88);
+            background: rgba(20, 24, 36, 0.9);
             border: 1px solid rgba(16, 185, 129, 0.28);
             border-radius: 16px;
             padding: 20px;
@@ -47,6 +64,20 @@
             font-weight: 700;
             color: #34d399;
             margin-bottom: 12px;
+        }
+        input[type="text"] {
+            width: 100%;
+            height: 44px;
+            background: #080a0f;
+            border: 1px solid #263042;
+            border-radius: 10px;
+            color: #34d399;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 0 12px;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            outline: none;
         }
         .btn-row {
             display: flex;
@@ -61,26 +92,27 @@
             cursor: pointer;
             touch-action: manipulation;
         }
-        .btn-roll {
+        .btn-main {
             flex: 1;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: #06120d;
         }
-        .btn-clear {
+        .btn-sub {
             background: #1f2937;
             color: #e5e7eb;
             border: 1px solid #374151;
         }
         .result-box {
-            margin-top: 14px;
+            margin-top: 12px;
             background: #080a0f;
             border: 1px solid #1f2937;
             border-radius: 12px;
-            padding: 16px;
+            padding: 14px;
             font-family: monospace;
-            font-size: 14px;
-            min-height: 48px;
+            font-size: 13px;
+            min-height: 44px;
             white-space: pre-line;
+            word-break: break-all;
         }
         .win {
             color: #34d399;
@@ -116,77 +148,124 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">LrapX <span>CODE ROLL</span></div>
-            <div class="sub">สุ่มรหัส • มีโอกาสได้กับไม่ได้ • ดูประวัติย้อนหลังได้</div>
+            <div class="logo">LrapX <span>SHOP & ROLL</span></div>
+            <div class="sub">แลกโค้ดเอาตังค์ในเว็บ • สุ่มรหัสทีละ 50 บาท (หักเงินจริงในเว็บ • มีได้/ไม่ได้)</div>
+        </div>
+
+        <div class="wallet-bar">
+            <span>ยอดเงินในเว็บ:</span>
+            <span id="balanceText" class="wallet-val">0 บาท</span>
         </div>
 
         <div class="card">
-            <div class="card-title">สุ่มรหัส</div>
+            <div class="card-title">1. ใส่โค้ดเอาตังค์ในเว็บ</div>
+            <input type="text" id="codeInput" placeholder="ใส่โค้ด เช่น BAHT1-LRAPX, BAHT250-LRAPX หรือ Payheeshop1000">
+            <button type="button" class="btn-main" style="width:100%;" id="claimBtn">กดแลกโค้ด</button>
+            <div id="codeResult" class="result-box">รอกรอกโค้ด...</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">2. สุ่มรหัส (รอบละ 50 บาท / สุ่ม 1 ที หัก 50 บาท)</div>
             <div class="btn-row">
-                <button type="button" class="btn-roll" id="rollBtn">กดสุ่มรหัส</button>
-                <button type="button" class="btn-clear" id="clearBtn">ล้างประวัติ</button>
+                <button type="button" class="btn-main" id="rollBtn">สุ่มรหัส (-50 บาท)</button>
+                <button type="button" class="btn-sub" id="clearBtn">ล้างประวัติ</button>
             </div>
-            <div id="resultBox" class="result-box">กด "กดสุ่มรหัส" เพื่อดูว่าได้หรือไม่ได้...</div>
+            <div id="rollResult" class="result-box">กด "สุ่มรหัส (-50 บาท)" เพื่อสุ่ม...</div>
         </div>
 
         <div class="card">
-            <div class="card-title">ประวัติการสุ่ม</div>
+            <div class="card-title">3. ประวัติการสุ่ม</div>
             <div id="historyBox">
-                <div class="result-box">ยังไม่มีประวัติ</div>
+                <div class="result-box">ยังไม่มีประวัติการสุ่ม</div>
             </div>
         </div>
     </div>
 
     <script>
         (function() {
-            var STORAGE_KEY = "lrapx_simple_code_history";
-            var SAMPLE_CODES = [
-                "sjdudjus:6282828",
-                "lrapxvip:9041725",
-                "deltarun:3819402",
-                "minikeys:7741209",
-                "aimbotpro:5192834"
-            ];
-            var memoryList = [];
+            var BAL_KEY = "lrapx_bal_v2";
+            var HIST_KEY = "lrapx_hist_v2";
+            var USED1000_KEY = "lrapx_used1000_v2";
+            var SPIN_PRICE = 50;
 
-            function loadHistory() {
+            var REAL_CODES = [
+                "Bagerpelly250:1212312121",
+                "Fanzotira807:1212312121",
+                "oqotyxlq9855:1100801510331zaz"
+            ];
+
+            var memBal = 0;
+            var memHist = [];
+            var memUsed1000 = false;
+
+            function getBal() {
                 try {
-                    var raw = localStorage.getItem(STORAGE_KEY);
-                    if (raw) {
-                        var parsed = JSON.parse(raw);
-                        if (Array.isArray(parsed)) memoryList = parsed;
+                    var v = localStorage.getItem(BAL_KEY);
+                    if (v !== null) memBal = parseInt(v, 10) || 0;
+                } catch (e) {}
+                return memBal;
+            }
+
+            function setBal(n) {
+                var clean = Math.max(0, parseInt(n, 10) || 0);
+                memBal = clean;
+                try { localStorage.setItem(BAL_KEY, String(clean)); } catch (e) {}
+                var el = document.getElementById("balanceText");
+                if (el) el.textContent = clean + " บาท";
+            }
+
+            function getUsed1000() {
+                if (memUsed1000) return true;
+                try {
+                    if (localStorage.getItem(USED1000_KEY) === "1") {
+                        memUsed1000 = true;
+                        return true;
                     }
                 } catch (e) {}
-                return memoryList;
+                return false;
             }
 
-            function saveHistory(list) {
-                memoryList = list;
+            function setUsed1000() {
+                memUsed1000 = true;
+                try { localStorage.setItem(USED1000_KEY, "1"); } catch (e) {}
+            }
+
+            function getHist() {
                 try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+                    var raw = localStorage.getItem(HIST_KEY);
+                    if (raw) {
+                        var arr = JSON.parse(raw);
+                        if (Array.isArray(arr)) memHist = arr;
+                    }
                 } catch (e) {}
-                renderHistory();
+                return memHist;
             }
 
-            function copyCode(text) {
-                if (!text) return;
+            function setHist(arr) {
+                memHist = arr;
+                try { localStorage.setItem(HIST_KEY, JSON.stringify(arr)); } catch (e) {}
+                renderHist();
+            }
+
+            function copyStr(txt) {
+                if (!txt) return;
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(function() {
-                        alert("คัดลอกแล้ว: " + text);
+                    navigator.clipboard.writeText(txt).then(function() {
+                        alert("คัดลอกแล้ว: " + txt);
                     }, function() {
-                        prompt("คัดลอกรหัสนี้:", text);
+                        prompt("คัดลอกรหัสนี้:", txt);
                     });
                 } else {
-                    prompt("คัดลอกรหัสนี้:", text);
+                    prompt("คัดลอกรหัสนี้:", txt);
                 }
             }
 
-            function renderHistory() {
-                var list = loadHistory();
+            function renderHist() {
+                var list = getHist();
                 var box = document.getElementById("historyBox");
                 if (!box) return;
                 if (!list.length) {
-                    box.innerHTML = '<div class="result-box">ยังไม่มีประวัติ</div>';
+                    box.innerHTML = '<div class="result-box">ยังไม่มีประวัติการสุ่ม</div>';
                     return;
                 }
                 box.innerHTML = "";
@@ -195,19 +274,19 @@
                     var row = document.createElement("div");
                     row.className = "history-item";
 
-                    var info = document.createElement("div");
-                    var statusSpan = document.createElement("div");
-                    statusSpan.className = item.got ? "win" : "lose";
-                    statusSpan.textContent = item.got ? ("ได้: " + item.code) : "ไม่ได้";
+                    var left = document.createElement("div");
+                    var title = document.createElement("div");
+                    title.className = item.got ? "win" : "lose";
+                    title.textContent = item.got ? ("ได้: " + item.code) : "ไม่ได้ (-50 บาท)";
 
-                    var timeSpan = document.createElement("div");
-                    timeSpan.style.color = "#9ca3af";
-                    timeSpan.style.fontSize = "11px";
-                    timeSpan.textContent = item.time;
+                    var meta = document.createElement("div");
+                    meta.style.color = "#9ca3af";
+                    meta.style.fontSize = "11px";
+                    meta.textContent = item.time;
 
-                    info.appendChild(statusSpan);
-                    info.appendChild(timeSpan);
-                    row.appendChild(info);
+                    left.appendChild(title);
+                    left.appendChild(meta);
+                    row.appendChild(left);
 
                     if (item.got && item.code) {
                         var btn = document.createElement("button");
@@ -215,62 +294,109 @@
                         btn.className = "copy-btn";
                         btn.textContent = "คัดลอก";
                         (function(c) {
-                            btn.addEventListener("click", function() {
-                                copyCode(c);
-                            });
+                            btn.addEventListener("click", function() { copyStr(c); });
                         })(item.code);
                         row.appendChild(btn);
                     }
-
                     box.appendChild(row);
                 }
             }
 
-            function makeRandomCode() {
-                if (Math.random() < 0.4) {
-                    return SAMPLE_CODES[Math.floor(Math.random() * SAMPLE_CODES.length)];
+            function handleClaim() {
+                var inp = document.getElementById("codeInput");
+                var out = document.getElementById("codeResult");
+                var code = inp && inp.value ? inp.value.trim() : "";
+                if (!code) {
+                    out.innerHTML = '<span class="lose">กรุณากรอกโค้ดก่อน</span>';
+                    return;
                 }
-                var chars = "abcdefghijklmnopqrstuvwxyz";
-                var left = "";
-                for (var i = 0; i < 8; i++) {
-                    left += chars.charAt(Math.floor(Math.random() * chars.length));
+                var u = code.toUpperCase();
+
+                if (u === "BAHT1-LRAPX") {
+                    if (Math.random() < 0.7) {
+                        var b1 = getBal() + 1;
+                        setBal(b1);
+                        out.innerHTML = '<span class="win">ได้ +1 บาท</span>\nยอดเงินในเว็บ: ' + b1 + ' บาท';
+                    } else {
+                        out.innerHTML = '<span class="lose">ไม่ได้ (+0 บาท)</span>\nยอดเงินในเว็บ: ' + getBal() + ' บาท';
+                    }
+                    return;
                 }
-                var right = String(Math.floor(1000000 + Math.random() * 9000000));
-                return left + ":" + right;
+
+                if (u === "BAHT250-LRAPX") {
+                    if (Math.random() < 0.6) {
+                        var r = Math.floor(Math.random() * 50) + 1;
+                        var b2 = getBal() + r;
+                        setBal(b2);
+                        out.innerHTML = '<span class="win">สุ่มได้ +' + r + ' บาท</span>\nยอดเงินในเว็บ: ' + b2 + ' บาท';
+                    } else {
+                        out.innerHTML = '<span class="lose">สุ่มไม่ได้ (+0 บาท)</span>\nยอดเงินในเว็บ: ' + getBal() + ' บาท';
+                    }
+                    return;
+                }
+
+                if (u === "PAYHEESHOP1000") {
+                    if (getUsed1000()) {
+                        out.innerHTML = '<span class="lose">โค้ด Payheeshop1000 ถูกใช้ไปแล้ว (1 ครั้ง/เครื่อง)</span>';
+                        return;
+                    }
+                    setUsed1000();
+                    if (Math.random() < 0.5) {
+                        var b3 = getBal() + 1000;
+                        setBal(b3);
+                        out.innerHTML = '<span class="win">สุ่มได้ +1,000 บาท</span>\nยอดเงินในเว็บ: ' + b3 + ' บาท';
+                    } else {
+                        out.innerHTML = '<span class="lose">สุ่มไม่ได้ (+0 บาท) และใช้สิทธิ์ไปแล้ว</span>\nยอดเงินในเว็บ: ' + getBal() + ' บาท';
+                    }
+                    return;
+                }
+
+                out.innerHTML = '<span class="lose">โค้ดไม่ถูกต้อง</span>';
             }
 
             function handleRoll() {
-                var box = document.getElementById("resultBox");
-                var now = new Date().toLocaleString();
-                var got = Math.random() < 0.5;
-                var code = got ? makeRandomCode() : "";
-
-                if (got) {
-                    box.innerHTML = '<span class="win">ได้รหัส!</span>\nรหัส: ' + code + '\nเวลา: ' + now;
-                } else {
-                    box.innerHTML = '<span class="lose">ไม่ได้</span>\nรอบนี้สุ่มไม่ติด\nเวลา: ' + now;
+                var out = document.getElementById("rollResult");
+                var cur = getBal();
+                if (cur < SPIN_PRICE) {
+                    out.innerHTML = '<span class="lose">เงินในเว็บไม่พอ (ต้องใช้ 50 บาทต่อการสุ่ม 1 ที | มีอยู่ ' + cur + ' บาท)</span>';
+                    return;
                 }
 
-                var next = loadHistory().slice();
-                next.unshift({ got: got, code: code, time: now });
-                saveHistory(next.slice(0, 30));
+                // ตัดเงินที่มีออก 50 บาท ต่อการสุ่ม 1 ที
+                var after = cur - SPIN_PRICE;
+                setBal(after);
+
+                var now = new Date().toLocaleString();
+                var got = Math.random() < 0.5;
+                var picked = got ? REAL_CODES[Math.floor(Math.random() * REAL_CODES.length)] : "";
+
+                if (got) {
+                    out.innerHTML = '<span class="win">ได้รหัส! (หัก -50 บาท)</span>\nรหัส: ' + picked + '\nเงินคงเหลือ: ' + after + ' บาท\nเวลา: ' + now;
+                } else {
+                    out.innerHTML = '<span class="lose">ไม่ได้ (หัก -50 บาท)</span>\nเงินคงเหลือ: ' + after + ' บาท\nเวลา: ' + now;
+                }
+
+                var h = getHist().slice();
+                h.unshift({ got: got, code: picked, time: now });
+                setHist(h.slice(0, 40));
             }
 
+            var claimBtn = document.getElementById("claimBtn");
             var rollBtn = document.getElementById("rollBtn");
             var clearBtn = document.getElementById("clearBtn");
 
-            if (rollBtn) {
-                rollBtn.addEventListener("click", handleRoll);
-            }
+            if (claimBtn) claimBtn.addEventListener("click", handleClaim);
+            if (rollBtn) rollBtn.addEventListener("click", handleRoll);
             if (clearBtn) {
                 clearBtn.addEventListener("click", function() {
-                    saveHistory([]);
-                    var box = document.getElementById("resultBox");
-                    if (box) box.textContent = 'กด "กดสุ่มรหัส" เพื่อดูว่าได้หรือไม่ได้...';
+                    setHist([]);
+                    var out = document.getElementById("rollResult");
+                    if (out) out.textContent = 'กด "สุ่มรหัส (-50 บาท)" เพื่อสุ่ม...';
                 });
             }
 
-            renderHistory();
+            setBal(getBal());
+            renderHist();
         })();
     </script>
 </body>
