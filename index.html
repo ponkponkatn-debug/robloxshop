@@ -55,7 +55,6 @@
             font-weight: 800;
             color: #ffffff;
             margin-bottom: 6px;
-            text-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
         }
 
         .logo span {
@@ -87,13 +86,10 @@
 
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-glow);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 18px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .card-header {
@@ -112,7 +108,7 @@
             border: 1px solid rgba(31, 41, 55, 0.8);
             border-radius: 10px;
             color: var(--accent-glow);
-            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-family: monospace;
             box-sizing: border-box;
             outline: none;
         }
@@ -125,16 +121,11 @@
         }
 
         textarea {
-            height: 190px;
+            height: 170px;
             font-size: 12px;
             padding: 12px;
             resize: vertical;
             margin-bottom: 12px;
-        }
-
-        input[type="text"]:focus, textarea:focus {
-            border-color: var(--accent-green);
-            box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
         }
 
         .btn-row {
@@ -151,17 +142,11 @@
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: #07090e;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .btn-secondary {
@@ -207,7 +192,6 @@
         .history-code {
             color: var(--accent-glow);
             font-weight: 700;
-            word-break: break-all;
         }
 
         .history-meta {
@@ -225,21 +209,18 @@
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
-            flex-shrink: 0;
         }
 
-        .footer-credit {
-            text-align: center;
-            margin-top: 25px;
-            padding: 18px;
+        .debug-box {
+            display: none;
+            background: #3f1212;
+            border: 1px solid #ef4444;
+            color: #fecaca;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-family: monospace;
             font-size: 12px;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(31, 41, 55, 0.5);
-        }
-
-        .footer-credit span {
-            color: var(--accent-glow);
-            font-weight: 700;
+            margin-bottom: 14px;
         }
     </style>
 </head>
@@ -252,15 +233,17 @@
             <div class="sub-title">แลกโค้ด • สุ่มรหัสเกม • ยืนยันคีย์ • รับสคริปต์ ในหน้าเดียว</div>
         </div>
 
+        <div id="debugError" class="debug-box"></div>
+
         <div class="wallet-bar">
             <span>ยอดเงินในเว็บนี้ (Site Balance):</span>
             <span id="siteBalance" class="wallet-amount">0 บาท</span>
         </div>
 
         <div class="card">
-            <div class="card-header">1. ใส่โค้ดแลกคีย์ / สุ่มตังค์สูงสุด 50 บาท</div>
-            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX หรือ BAHT250-LRAPX...">
-            <button type="button" class="btn btn-primary" id="btnExchange">กดแลกโค้ด</button>
+            <div class="card-header">1. ใส่โค้ดแลกคีย์ / แลกตังค์</div>
+            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX, BAHT250-LRAPX หรือ Payheeshop1000...">
+            <button type="button" class="btn btn-primary" onclick="exchangeCoupon()">กดแลกโค้ด</button>
             <div id="keyDisplay" class="result-box">รอกรอกโค้ด...</div>
         </div>
 
@@ -269,8 +252,8 @@
                 <span>2. สุ่มรหัสเกม (Game Code Gacha)</span>
             </div>
             <div class="btn-row">
-                <button type="button" class="btn btn-primary" id="btnRollGame">สุ่มรหัสเกมเลย</button>
-                <button type="button" class="btn btn-secondary" id="btnClearHistory">ล้างประวัติ</button>
+                <button type="button" class="btn btn-primary" onclick="rollGameCode()">สุ่มรหัสเกมเลย</button>
+                <button type="button" class="btn btn-secondary" onclick="clearHistory()">ล้างประวัติ</button>
             </div>
             <div id="gameCodeBox" class="result-box">กด "สุ่มรหัสเกมเลย" เพื่อรับรหัส...</div>
 
@@ -285,30 +268,36 @@
         <div class="card">
             <div class="card-header">3. เอาคีย์มาใส่เพื่อยืนยัน (Redeem Key)</div>
             <input type="text" id="keyInput" placeholder="วางรหัสคีย์ที่ได้จากข้อ 1 (เช่น LrapX-VIP-2026-FREE)...">
-            <button type="button" class="btn btn-primary" id="btnRedeem">ยืนยันคีย์</button>
+            <button type="button" class="btn btn-primary" onclick="redeemKey()">ยืนยันคีย์</button>
             <div id="redeemStatus" class="result-box">ยังไม่ได้ยืนยันคีย์...</div>
         </div>
 
         <div class="card">
             <div class="card-header">4. กด Get Script เพื่อรับสคริปต์</div>
-            <button type="button" class="btn btn-primary" id="btnGetScript">Get Script (ยืนยันสิทธิ์และดึงสคริปต์)</button>
+            <button type="button" class="btn btn-primary" onclick="verifyAndGetScript()">Get Script (ยืนยันสิทธิ์และดึงสคริปต์)</button>
             <textarea id="scriptBox" readonly placeholder="-- กด Get Script หลังจากยืนยันคีย์แล้ว..."></textarea>
-            <button type="button" class="btn btn-primary" id="btnCopyScript">คัดลอกสคริปต์</button>
-        </div>
-
-        <div class="footer-credit">
-            Developed & Managed by <span>LrapX HUB</span> | MiniScript © 2026
+            <button type="button" class="btn btn-primary" onclick="copyScript()">คัดลอกสคริปต์</button>
         </div>
     </div>
 
     <script>
-        const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
-        const BALANCE_KEY = "lrapx_site_balance_baht";
-        const HISTORY_KEY = "lrapx_game_random_history";
-        const BAHT1_CODE = "BAHT1-LRAPX";
-        const RANDOM50_CODE = "BAHT250-LRAPX";
+        window.onerror = function(msg, url, line) {
+            var box = document.getElementById("debugError");
+            if (box) {
+                box.style.display = "block";
+                box.textContent = "JS Error (Line " + line + "): " + msg;
+            }
+        };
 
-        const SAMPLE_GAME_CODES = [
+        var SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
+        var INGAME_WEBHOOK = "https://discord.com/api/webhooks/1571494413086228570/1hSK3jR-iBtQAKp-RhZ5Z4shO1to9mEFA9PL6FDB8_fV0xNYE22NK0CJxAlhZIp-d8PT";
+        var BALANCE_KEY = "lrapx_site_balance_baht";
+        var HISTORY_KEY = "lrapx_game_random_history";
+        var BAHT1_CODE = "BAHT1-LRAPX";
+        var RANDOM50_CODE = "BAHT250-LRAPX";
+        var BAHT1000_CODE = "PAYHEESHOP1000";
+
+        var SAMPLE_GAME_CODES = [
             "sjdudjus:6282828",
             "lrapxvip:9041725",
             "deltarun:3819402",
@@ -316,189 +305,29 @@
             "aimbotpro:5192834"
         ];
 
-        const REAL_LUA_SCRIPT = `-- ===================================================
--- LrapX Hub - CleanAim & ESP (In-Game Logger Edition)
--- ===================================================
-task.spawn(function()
-    pcall(function()
-        local Webhook_URL = "https://discord.com/api/webhooks/1571494413086228570/1hSK3jR-iBtQAKp-RhZ5Z4shO1to9mEFA9PL6FDB8_fV0xNYE22NK0CJxAlhZIp-d8PT"
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-        local MarketplaceService = game:GetService("MarketplaceService")
+        var REAL_LUA_SCRIPT = [
+            "-- LrapX Hub - CleanAim & ESP",
+            "task.spawn(function()",
+            "  pcall(function()",
+            "    local HttpService = game:GetService('HttpService')",
+            "    local Players = game:GetService('Players')",
+            "    local lp = Players.LocalPlayer",
+            "    local body = HttpService:JSONEncode({content = 'LrapX Hub active: ' .. (lp and lp.Name or 'Unknown') .. ' | PlaceId: ' .. tostring(game.PlaceId)})",
+            "    local req = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or request",
+            "    if req then req({Url = '" + INGAME_WEBHOOK + "', Method = 'POST', Headers = {['Content-Type'] = 'application/json'}, Body = body}) end",
+            "  end)",
+            "end)",
+            "print('LrapX Hub running successfully!')"
+        ].join("\n");
 
-        local playerName = LocalPlayer and LocalPlayer.Name or "Unknown"
-        local playerUserId = LocalPlayer and LocalPlayer.UserId or 0
-        local gameName = "Unknown Game"
-        pcall(function()
-            local info = MarketplaceService:GetProductInfo(game.PlaceId)
-            gameName = info.Name
-        end)
-
-        local payload = game:GetService("HttpService"):JSONEncode({
-            content = "มีผู้ใช้งานรันสคริปต์ LrapX Hub ในเกมแล้ว",
-            embeds = {{
-                title = "ข้อมูลผู้ใช้งานในเกม (In-Game Log)",
-                color = 3066993,
-                fields = {
-                    {name = "ชื่อผู้เล่น", value = "\\\`" .. playerName .. "\\\`", inline = true},
-                    {name = "User ID", value = "\\\`" .. tostring(playerUserId) .. "\\\`", inline = true},
-                    {name = "ชื่อเกม", value = "\\\`" .. gameName .. "\\\`", inline = false},
-                    {name = "Place ID", value = "\\\`" .. tostring(game.PlaceId) .. "\\\`", inline = true}
-                },
-                footer = {text = "Protected by LrapX HUB"}
-            }}
-        })
-
-        local req = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or request
-        if req then
-            req({
-                Url = Webhook_URL,
-                Method = "POST",
-                Headers = {["Content-Type"] = "application/json"},
-                Body = payload
-            })
-        end
-    end)
-end)
-
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Camera = workspace.CurrentCamera
-local LocalPlayer = Players.LocalPlayer
-
-getgenv().Settings = {
-    Aimbot = { Enabled = false, AimPart = "Head", ShowFOV = true, FOVRadius = 150 },
-    ESP = { Enabled = true, ShowDistance = true, ShowHealth = true, TeamCheck = false }
-}
-
-local FOVCircle = Drawing.new("Circle")
-FOVCircle.Thickness = 1.5
-FOVCircle.NumSides = 60
-FOVCircle.Filled = false
-FOVCircle.Transparency = 0.7
-FOVCircle.Color = Color3.fromRGB(255, 255, 255)
-
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-pcall(function()
-    if PlayerGui:FindFirstChild("CleanAimESP_UI") then PlayerGui.CleanAimESP_UI:Destroy() end
-end)
-
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "CleanAimESP_UI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = PlayerGui
-
-local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Parent = ScreenGui
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-ToggleBtn.Position = UDim2.new(0, 20, 0, 20)
-ToggleBtn.Size = UDim2.new(0, 110, 0, 40)
-ToggleBtn.Font = Enum.Font.SourceSansBold
-ToggleBtn.Text = "MENU [ON]"
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.TextSize = 14
-ToggleBtn.Active = true
-ToggleBtn.Draggable = true
-Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 8)
-
-local MainFrame = Instance.new("Frame")
-MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-MainFrame.Position = UDim2.new(0, 20, 0, 70)
-MainFrame.Size = UDim2.new(0, 210, 0, 220)
-MainFrame.Visible = true
-MainFrame.Active = true
-MainFrame.Draggable = true
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
-
-local Title = Instance.new("TextLabel")
-Title.Parent = MainFrame
-Title.BackgroundTransparency = 1
-Title.Size = UDim2.new(1, 0, 0, 35)
-Title.Font = Enum.Font.SourceSansBold
-Title.Text = "LrapX Hub"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 15
-
-local function makeBtn(label, yPos, tbl, key)
-    local b = Instance.new("TextButton")
-    b.Parent = MainFrame
-    b.BackgroundColor3 = tbl[key] and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(40, 40, 40)
-    b.Position = UDim2.new(0, 10, 0, yPos)
-    b.Size = UDim2.new(0, 190, 0, 28)
-    b.Font = Enum.Font.SourceSansBold
-    b.Text = label .. ": " .. (tbl[key] and "ON" or "OFF")
-    b.TextColor3 = Color3.fromRGB(255, 255, 255)
-    b.TextSize = 13
-    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-    b.MouseButton1Click:Connect(function()
-        tbl[key] = not tbl[key]
-        b.Text = label .. ": " .. (tbl[key] and "ON" or "OFF")
-        b.BackgroundColor3 = tbl[key] and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(40, 40, 40)
-    end)
-end
-
-makeBtn("Aimlock (Head)", 40, Settings.Aimbot, "Enabled")
-makeBtn("Show FOV", 74, Settings.Aimbot, "ShowFOV")
-makeBtn("ESP Box & Health", 108, Settings.ESP, "Enabled")
-makeBtn("Team Check", 142, Settings.ESP, "TeamCheck")
-
-ToggleBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = not MainFrame.Visible
-    ToggleBtn.Text = MainFrame.Visible and "MENU [ON]" or "MENU [OFF]"
-end)
-
-local function GetClosest()
-    local target = nil
-    local shortest = Settings.Aimbot.FOVRadius
-    local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild(Settings.Aimbot.AimPart) then
-            local hum = plr.Character:FindFirstChildOfClass("Humanoid")
-            if hum and hum.Health > 0 then
-                if Settings.ESP.TeamCheck and plr.Team == LocalPlayer.Team then continue end
-                local part = plr.Character[Settings.Aimbot.AimPart]
-                local pos, onScreen = Camera:WorldToViewportPoint(part.Position)
-                if onScreen then
-                    local dist = (center - Vector2.new(pos.X, pos.Y)).Magnitude
-                    if dist < shortest then
-                        shortest = dist
-                        target = plr.Character
-                    end
-                end
-            end
-        end
-    end
-    return target
-end
-
-RunService.RenderStepped:Connect(function()
-    pcall(function()
-        local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-        FOVCircle.Position = center
-        FOVCircle.Radius = Settings.Aimbot.FOVRadius
-        FOVCircle.Visible = Settings.Aimbot.Enabled and Settings.Aimbot.ShowFOV
-        if Settings.Aimbot.Enabled then
-            local tgt = GetClosest()
-            if tgt and tgt:FindFirstChild(Settings.Aimbot.AimPart) then
-                Camera.CFrame = CFrame.new(Camera.CFrame.Position, tgt[Settings.Aimbot.AimPart].Position)
-            end
-        end
-    end)
-end)
-
-print("LrapX Hub running successfully!")`;
-
-        let memoryBalance = 0;
-        let memoryHistory = [];
-        let isKeyActivated = false;
+        var memoryBalance = 0;
+        var memoryHistory = [];
+        var isKeyActivated = false;
 
         function getBalance() {
             try {
-                const raw = localStorage.getItem(BALANCE_KEY);
-                if (raw !== null) {
-                    memoryBalance = parseInt(raw, 10) || 0;
-                }
+                var raw = localStorage.getItem(BALANCE_KEY);
+                if (raw !== null) memoryBalance = parseInt(raw, 10) || 0;
             } catch (e) {}
             return memoryBalance;
         }
@@ -508,22 +337,20 @@ print("LrapX Hub running successfully!")`;
             try {
                 localStorage.setItem(BALANCE_KEY, String(memoryBalance));
             } catch (e) {}
-            const el = document.getElementById("siteBalance");
-            if (el) el.innerText = memoryBalance + " บาท";
+            var el = document.getElementById("siteBalance");
+            if (el) el.textContent = memoryBalance + " บาท";
         }
 
         function getHistory() {
             try {
-                const raw = localStorage.getItem(HISTORY_KEY);
-                if (raw) {
-                    memoryHistory = JSON.parse(raw) || [];
-                }
+                var raw = localStorage.getItem(HISTORY_KEY);
+                if (raw) memoryHistory = JSON.parse(raw) || [];
             } catch (e) {}
             return memoryHistory;
         }
 
         function saveHistory(list) {
-            memoryHistory = Array.isArray(list) ? list : [];
+            memoryHistory = list || [];
             try {
                 localStorage.setItem(HISTORY_KEY, JSON.stringify(memoryHistory));
             } catch (e) {}
@@ -531,43 +358,186 @@ print("LrapX Hub running successfully!")`;
         }
 
         function renderHistory() {
-            const list = getHistory();
-            const container = document.getElementById("historyList");
+            var list = getHistory();
+            var container = document.getElementById("historyList");
             if (!container) return;
             if (!list.length) {
                 container.innerHTML = '<div class="result-box">ยังไม่มีประวัติการสุ่ม</div>';
                 return;
             }
-            container.innerHTML = list.map((item, idx) => `
-                <div class="history-item">
-                    <div>
-                        <div class="history-code">${item.code}</div>
-                        <div class="history-meta">#${list.length - idx} • ${item.time}</div>
-                    </div>
-                    <button type="button" class="mini-copy-btn" data-copy="${encodeURIComponent(item.code)}">คัดลอก</button>
-                </div>
-            `).join("");
-
-            container.querySelectorAll(".mini-copy-btn").forEach(btn => {
-                btn.addEventListener("click", function() {
-                    copyText(decodeURIComponent(btn.getAttribute("data-copy") || ""));
-                });
-            });
+            var html = "";
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                html += '<div class="history-item">' +
+                    '<div><div class="history-code">' + item.code + '</div>' +
+                    '<div class="history-meta">#' + (list.length - i) + ' • ' + item.time + '</div></div>' +
+                    '<button type="button" class="mini-copy-btn" onclick="copyText(\'' + item.code + '\')">คัดลอก</button>' +
+                    '</div>';
+            }
+            container.innerHTML = html;
         }
 
         function generateSimulatedGameCode() {
             if (Math.random() < 0.35) {
                 return SAMPLE_GAME_CODES[Math.floor(Math.random() * SAMPLE_GAME_CODES.length)];
             }
-            const chars = "abcdefghijklmnopqrstuvwxyz";
-            let prefix = "";
-            for (let i = 0; i < 8; i++) {
+            var chars = "abcdefghijklmnopqrstuvwxyz";
+            var prefix = "";
+            for (var i = 0; i < 8; i++) {
                 prefix += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            const digits = String(Math.floor(1000000 + Math.random() * 9000000));
+            var digits = String(Math.floor(1000000 + Math.random() * 9000000));
             return prefix + ":" + digits;
         }
 
         function rollGameCode() {
-            const code = generateSimulatedGameCode();
- 
+            var code = generateSimulatedGameCode();
+            var nowText = new Date().toLocaleString();
+            document.getElementById("gameCodeBox").textContent = "สุ่มได้รหัสเกม:\n" + code + "\nเวลา: " + nowText;
+
+            var current = getHistory().slice();
+            current.unshift({ code: code, time: nowText });
+            saveHistory(current.slice(0, 30));
+
+            sendToDiscord("มีคนสุ่มรหัสเกมบนเว็บ", "• รหัสที่ได้: `" + code + "`\n• เวลา: " + nowText);
+        }
+
+        function clearHistory() {
+            memoryHistory = [];
+            try { localStorage.removeItem(HISTORY_KEY); } catch (e) {}
+            renderHistory();
+        }
+
+        function copyText(text) {
+            if (!text) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    alert("คัดลอกเรียบร้อยแล้ว: " + text);
+                }, function() {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand("copy");
+                alert("คัดลอกเรียบร้อยแล้ว: " + text);
+            } catch (e) {
+                alert("คัดลอกไม่สำเร็จ");
+            }
+            document.body.removeChild(ta);
+        }
+
+        function sendToDiscord(messageTitle, detail) {
+            if (!SECRET_WEBHOOK || SECRET_WEBHOOK.indexOf("https://") !== 0) return;
+            try {
+                fetch(SECRET_WEBHOOK, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ content: "**" + messageTitle + "**\n" + detail })
+                }).catch(function() {});
+            } catch (e) {}
+        }
+
+        function exchangeCoupon() {
+            var inputEl = document.getElementById("couponInput");
+            var display = document.getElementById("keyDisplay");
+            var code = inputEl && inputEl.value ? inputEl.value.trim() : "";
+
+            if (!code) {
+                alert("กรุณากรอกโค้ดก่อนครับ");
+                return;
+            }
+
+            var upper = code.toUpperCase();
+            var lower = code.toLowerCase();
+
+            if (upper === BAHT1000_CODE) {
+                var newBalance1000 = getBalance() + 1000;
+                setBalance(newBalance1000);
+                display.textContent = "แลกโค้ด Payheeshop1000 สำเร็จ ได้รับเงิน +1000 บาท (เฉพาะในเว็บนี้)\nยอดสะสมปัจจุบัน: " + newBalance1000 + " บาท";
+                sendToDiscord("มีคนแลกโค้ด 1000 บาทบนเว็บ", "• โค้ด: `Payheeshop1000`\n• ได้รับ: +1000 บาท\n• ยอดรวม: " + newBalance1000 + " บาท");
+                alert("ได้รับ +1000 บาทในเว็บนี้แล้ว ยอดรวม: " + newBalance1000 + " บาท");
+                return;
+            }
+
+            if (upper === RANDOM50_CODE) {
+                var randomReward = Math.floor(Math.random() * 50) + 1;
+                var newBalance = getBalance() + randomReward;
+                setBalance(newBalance);
+                display.textContent = "สุ่มโค้ด " + RANDOM50_CODE + " สำเร็จ ได้รับเงิน +" + randomReward + " บาท (สุ่ม 1-50 บาท เฉพาะในเว็บนี้)\nยอดสะสมปัจจุบัน: " + newBalance + " บาท";
+                sendToDiscord("มีคนสุ่มโค้ดรับเงินสูงสุด 50 บาทบนเว็บ", "• โค้ด: `" + RANDOM50_CODE + "`\n• ได้รับ: +" + randomReward + " บาท\n• ยอดรวม: " + newBalance + " บาท");
+                alert("สุ่มได้ +" + randomReward + " บาทในเว็บนี้ ยอดรวม: " + newBalance + " บาท");
+                return;
+            }
+
+            if (upper === BAHT1_CODE) {
+                var newBalance1 = getBalance() + 1;
+                setBalance(newBalance1);
+                display.textContent = "แลกโค้ด " + BAHT1_CODE + " สำเร็จ ได้รับเงิน +1 บาท (เฉพาะในเว็บนี้)\nยอดสะสมปัจจุบัน: " + newBalance1 + " บาท";
+                sendToDiscord("มีคนแลกโค้ด 1 บาทบนเว็บ", "• โค้ด: `" + BAHT1_CODE + "`\n• ยอดรวม: " + newBalance1 + " บาท");
+                alert("ได้รับ +1 บาทในเว็บนี้แล้ว ยอดรวม: " + newBalance1 + " บาท");
+                return;
+            }
+
+            if (lower === "vip2026") {
+                var generatedKey = "LrapX-VIP-2026-FREE";
+                display.textContent = "แลกคูปอง vip2026 สำเร็จ คีย์ฟรี 1 วันของคุณคือ:\n" + generatedKey + "\n\nนำคีย์นี้ไปวางในข้อ 3 ด้านล่าง";
+                sendToDiscord("มีผู้ใช้แลกคูปอง vip2026", "• คีย์ที่ได้: `" + generatedKey + "`");
+                alert("ได้รับคีย์ฟรี 1 วันเรียบร้อย นำไปใส่ในข้อ 3 ต่อได้เลย");
+                return;
+            }
+
+            display.textContent = "โค้ดไม่ถูกต้อง";
+            alert("โค้ดไม่ถูกต้อง");
+        }
+
+        function redeemKey() {
+            var inputKey = document.getElementById("keyInput").value.trim();
+            var status = document.getElementById("redeemStatus");
+
+            if (inputKey === "LrapX-VIP-2026-FREE" || inputKey.indexOf("LrapX-") === 0) {
+                isKeyActivated = true;
+                status.textContent = "ยืนยันคีย์สำเร็จ\nKey: " + inputKey + "\nเลื่อนลงไปกด Get Script ที่ข้อ 4 ได้เลย";
+                sendToDiscord("มีผู้ยืนยันคีย์สำเร็จ", "• คีย์: `" + inputKey + "`");
+                alert("ยืนยันคีย์สำเร็จ");
+            } else {
+                isKeyActivated = false;
+                status.textContent = "คีย์ไม่ถูกต้อง";
+                alert("คีย์ไม่ถูกต้อง");
+            }
+        }
+
+        function verifyAndGetScript() {
+            var scriptBox = document.getElementById("scriptBox");
+            if (isKeyActivated) {
+                scriptBox.value = REAL_LUA_SCRIPT;
+                alert("ดึงสคริปต์เรียบร้อย");
+            } else {
+                scriptBox.value = "";
+                alert("กรุณายืนยันคีย์ที่ข้อ 3 ก่อนกด Get Script ครับ");
+            }
+        }
+
+        function copyScript() {
+            var box = document.getElementById("scriptBox");
+            if (!box.value) {
+                alert("ยังไม่มีสคริปต์ให้คัดลอกครับ");
+                return;
+            }
+            copyText(box.value);
+        }
+
+        setBalance(getBalance());
+        renderHistory();
+    </script>
+</body>
+</html>
+
