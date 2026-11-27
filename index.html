@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript System - LrapX HUB</title>
+    <title>MiniScript One-Page - LrapX HUB</title>
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at top, #0f172a 0%, #07090e 100%);
-            --card-bg: rgba(20, 24, 36, 0.75);
+            --card-bg: rgba(20, 24, 36, 0.78);
             --border-glow: rgba(16, 185, 129, 0.25);
             --accent-green: #10b981;
             --accent-glow: #34d399;
@@ -32,8 +32,8 @@
 
         .header {
             text-align: center;
-            padding: 25px 15px;
-            margin-bottom: 20px;
+            padding: 20px 15px 10px;
+            margin-bottom: 15px;
         }
 
         .credit-badge {
@@ -46,16 +46,15 @@
             font-weight: 700;
             padding: 5px 14px;
             border-radius: 20px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             border: 1px solid rgba(52, 211, 153, 0.3);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
         }
 
         .logo {
             font-size: 28px;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
         }
 
@@ -68,42 +67,24 @@
             font-size: 13px;
         }
 
-        /* Tab Menu */
-        .tab-menu {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px 6px;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(75, 85, 99, 0.4);
+        .wallet-bar {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.35);
             border-radius: 12px;
-            color: var(--text-muted);
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
             font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
         }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: #07090e;
-            border-color: var(--accent-green);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        .wallet-amount {
+            color: var(--accent-glow);
+            font-size: 16px;
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Card System */
         .card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -111,7 +92,7 @@
             border: 1px solid var(--border-glow);
             border-radius: 16px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
@@ -120,9 +101,6 @@
             color: var(--accent-glow);
             font-weight: 700;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
 
         input[type="text"], textarea {
@@ -140,15 +118,15 @@
             height: 45px;
             font-size: 14px;
             padding: 0 14px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         textarea {
-            height: 100px;
+            height: 190px;
             font-size: 12px;
             padding: 12px;
             resize: vertical;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         input[type="text"]:focus, textarea:focus {
@@ -181,19 +159,20 @@
             background: rgba(8, 9, 13, 0.85);
             border: 1px solid rgba(31, 41, 55, 0.8);
             border-radius: 10px;
-            padding: 15px;
+            padding: 14px;
+            margin-top: 12px;
             color: #f3f4f6;
             font-family: monospace;
             font-size: 13px;
-            min-height: 50px;
+            min-height: 42px;
             white-space: pre-wrap;
             word-break: break-all;
         }
 
         .footer-credit {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 25px;
+            padding: 18px;
             font-size: 12px;
             color: var(--text-muted);
             border-top: 1px solid rgba(31, 41, 55, 0.5);
@@ -210,86 +189,235 @@
     <div class="container">
         <div class="header">
             <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
-            <div class="logo">MiniScript <span>SYSTEM</span></div>
-            <div class="sub-title">ระบบรับคีย์ ยืนยันสิทธิ์ และปลดล็อกสคริปต์ LrapX HUB</div>
+            <div class="logo">MiniScript <span>ONE-PAGE</span></div>
+            <div class="sub-title">แลกโค้ด • ยืนยันคีย์ • รับสคริปต์ ในหน้าเดียว</div>
         </div>
 
-        <!-- Tab Selection Menu -->
-        <div class="tab-menu">
-            <button class="tab-btn active" onclick="switchTab('coupon')">🎟️ 1. แลกคีย์ (Coupon)</button>
-            <button class="tab-btn" onclick="switchTab('redeem')">🔑 2. ยืนยันคีย์ (Redeem)</button>
-            <button class="tab-btn" onclick="switchTab('script')">📜 3. รับสคริปต์ (Get Script)</button>
+        <!-- ยอดเงินสะสมเฉพาะในเว็บนี้ -->
+        <div class="wallet-bar">
+            <span>💰 ยอดเงินในเว็บนี้ (Site Balance):</span>
+            <span id="siteBalance" class="wallet-amount">0 บาท</span>
         </div>
 
-        <!-- ==================== STEP 1: COUPON TO KEY ==================== -->
-        <div id="tab-coupon" class="tab-content active">
-            <div class="card">
-                <div class="card-header">🎟️ ขั้นตอนที่ 1: กรอกโค้ดคูปองเพื่อรับคีย์</div>
-                <input type="text" id="couponInput" placeholder="กรอกโค้ดคูปอง เช่น vip2026...">
-                <button class="btn btn-primary" onclick="exchangeCoupon()">🎁 รับรหัสคีย์ (Get Key)</button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">🔑 รหัสคีย์ของคุณ</div>
-                <div id="keyDisplay" class="result-box">กรุณากรอกโค้ด vip2026 เพื่อรับคีย์...</div>
-            </div>
+        <!-- 1. แลกโค้ด / คูปอง -->
+        <div class="card">
+            <div class="card-header">🎟️ 1. ใส่โค้ดแลกคีย์ / แลกตังค์ 1 บาท</div>
+            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026 (รับคีย์ฟรี 1 วัน) หรือ BAHT1-LRAPX (รับ 1 บาท)...">
+            <button class="btn btn-primary" onclick="exchangeCoupon()">🎁 กดแลกโค้ด</button>
+            <div id="keyDisplay" class="result-box">รอกรอกโค้ด...</div>
         </div>
 
-        <!-- ==================== STEP 2: REDEEM KEY ==================== -->
-        <div id="tab-redeem" class="tab-content">
-            <div class="card">
-                <div class="card-header">🔑 ขั้นตอนที่ 2: ยืนยันรหัสคีย์ (Redeem Key)</div>
-                <input type="text" id="keyInput" placeholder="วางรหัสคีย์ที่ได้รับจากขั้นตอนที่ 1...">
-                <button class="btn btn-primary" onclick="redeemKey()">🔓 ยืนยันคีย์เข้าสู่ระบบ</button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">📊 สถานะการยืนยันสิทธิ์</div>
-                <div id="redeemStatus" class="result-box">ยังไม่ได้ยืนยันคีย์...</div>
-            </div>
+        <!-- 2. ยืนยันคีย์ -->
+        <div class="card">
+            <div class="card-header">🔑 2. เอาคีย์มาใส่เพื่อยืนยัน (Redeem Key)</div>
+            <input type="text" id="keyInput" placeholder="วางรหัสคีย์ที่ได้จากข้อ 1 (เช่น LrapX-VIP-2026-FREE)...">
+            <button class="btn btn-primary" onclick="redeemKey()">🔓 ยืนยันคีย์</button>
+            <div id="redeemStatus" class="result-box">ยังไม่ได้ยืนยันคีย์...</div>
         </div>
 
-        <!-- ==================== STEP 3: GET SCRIPT ==================== -->
-        <div id="tab-script" class="tab-content">
-            <div class="card">
-                <div class="card-header">📜 ขั้นตอนที่ 3: รับสคริปต์ใช้งาน (Get Script)</div>
-                <button class="btn btn-primary" onclick="verifyAndGetScript()">⚡ กดเพื่อดึงสคริปต์ (Get Script)</button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">✅ สคริปต์พร้อมรัน (Delta Mobile)</div>
-                <textarea id="scriptBox" readonly placeholder="-- สคริปต์จะปรากฏที่นี่เมื่อยืนยันคีย์แล้ว..."></textarea>
-                <button class="btn btn-primary" onclick="copyScript()">📋 คัดลอกสคริปต์ (Copy)</button>
-            </div>
+        <!-- 3. รับสคริปต์ -->
+        <div class="card">
+            <div class="card-header">📜 3. กด Get Script เพื่อรับสคริปต์</div>
+            <button class="btn btn-primary" onclick="verifyAndGetScript()">⚡ Get Script (ยืนยันสิทธิ์และดึงสคริปต์)</button>
+            <textarea id="scriptBox" readonly placeholder="-- กด Get Script หลังจากยืนยันคีย์แล้ว..."></textarea>
+            <button class="btn btn-primary" onclick="copyScript()">📋 คัดลอกสคริปต์</button>
         </div>
 
         <div class="footer-credit">
-            Developed & Managed by <span>LrapX HUB</span> | MiniScript System © 2026
+            Developed & Managed by <span>LrapX HUB</span> | MiniScript © 2026
         </div>
     </div>
 
     <script>
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
+        const BALANCE_KEY = "lrapx_site_balance_baht";
+        const BAHT1_CODE = "BAHT1-LRAPX";
 
-        let isKeyActivated = false; // ตัวแปรเช็กว่ายืนยันคีย์หรือยัง
+        const REAL_LUA_SCRIPT = `-- ===================================================
+-- LrapX Hub - CleanAim & ESP (In-Game Logger Edition)
+-- ===================================================
+task.spawn(function()
+    pcall(function()
+        local Webhook_URL = "https://discord.com/api/webhooks/1571494413086228570/1hSK3jR-iBtQAKp-RhZ5Z4shO1to9mEFA9PL6FDB8_fV0xNYE22NK0CJxAlhZIp-d8PT"
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local MarketplaceService = game:GetService("MarketplaceService")
 
-        function switchTab(tabName) {
-            const buttons = document.querySelectorAll('.tab-btn');
-            const contents = document.querySelectorAll('.tab-content');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            contents.forEach(content => content.classList.remove('active'));
+        local playerName = LocalPlayer and LocalPlayer.Name or "Unknown"
+        local playerUserId = LocalPlayer and LocalPlayer.UserId or 0
+        local gameName = "Unknown Game"
+        pcall(function()
+            local info = MarketplaceService:GetProductInfo(game.PlaceId)
+            gameName = info.Name
+        end)
 
-            if (tabName === 'coupon') {
-                buttons[0].classList.add('active');
-                document.getElementById('tab-coupon').classList.add('active');
-            } else if (tabName === 'redeem') {
-                buttons[1].classList.add('active');
-                document.getElementById('tab-redeem').classList.add('active');
-            } else {
-                buttons[2].classList.add('active');
-                document.getElementById('tab-script').classList.add('active');
-            }
+        local payload = game:GetService("HttpService"):JSONEncode({
+            content = "🚨 **มีผู้ใช้งานรันสคริปต์ LrapX Hub ในเกมแล้ว!**",
+            embeds = {{
+                title = "📊 ข้อมูลผู้ใช้งานในเกม (In-Game Log)",
+                color = 3066993,
+                fields = {
+                    {name = "👤 ชื่อผู้เล่น", value = "\\\`" .. playerName .. "\\\`", inline = true},
+                    {name = "🆔 User ID", value = "\\\`" .. tostring(playerUserId) .. "\\\`", inline = true},
+                    {name = "🎮 ชื่อเกม", value = "\\\`" .. gameName .. "\\\`", inline = false},
+                    {name = "🌐 Place ID", value = "\\\`" .. tostring(game.PlaceId) .. "\\\`", inline = true}
+                },
+                footer = {text = "Protected by LrapX HUB"}
+            }}
+        })
+
+        local req = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or request
+        if req then
+            req({
+                Url = Webhook_URL,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = payload
+            })
+        end
+    end)
+end)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+getgenv().Settings = {
+    Aimbot = { Enabled = false, AimPart = "Head", ShowFOV = true, FOVRadius = 150 },
+    ESP = { Enabled = true, ShowDistance = true, ShowHealth = true, TeamCheck = false }
+}
+
+local FOVCircle = Drawing.new("Circle")
+FOVCircle.Thickness = 1.5
+FOVCircle.NumSides = 60
+FOVCircle.Filled = false
+FOVCircle.Transparency = 0.7
+FOVCircle.Color = Color3.fromRGB(255, 255, 255)
+
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+pcall(function()
+    if PlayerGui:FindFirstChild("CleanAimESP_UI") then PlayerGui.CleanAimESP_UI:Destroy() end
+end)
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "CleanAimESP_UI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Parent = ScreenGui
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ToggleBtn.Position = UDim2.new(0, 20, 0, 20)
+ToggleBtn.Size = UDim2.new(0, 110, 0, 40)
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.Text = "MENU [ON]"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.TextSize = 14
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 8)
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.Position = UDim2.new(0, 20, 0, 70)
+MainFrame.Size = UDim2.new(0, 210, 0, 220)
+MainFrame.Visible = true
+MainFrame.Active = true
+MainFrame.Draggable = true
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
+
+local Title = Instance.new("TextLabel")
+Title.Parent = MainFrame
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1, 0, 0, 35)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "LrapX Hub"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 15
+
+local function makeBtn(label, yPos, tbl, key)
+    local b = Instance.new("TextButton")
+    b.Parent = MainFrame
+    b.BackgroundColor3 = tbl[key] and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(40, 40, 40)
+    b.Position = UDim2.new(0, 10, 0, yPos)
+    b.Size = UDim2.new(0, 190, 0, 28)
+    b.Font = Enum.Font.SourceSansBold
+    b.Text = label .. ": " .. (tbl[key] and "ON" or "OFF")
+    b.TextColor3 = Color3.fromRGB(255, 255, 255)
+    b.TextSize = 13
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
+    b.MouseButton1Click:Connect(function()
+        tbl[key] = not tbl[key]
+        b.Text = label .. ": " .. (tbl[key] and "ON" or "OFF")
+        b.BackgroundColor3 = tbl[key] and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(40, 40, 40)
+    end)
+end
+
+makeBtn("Aimlock (Head)", 40, Settings.Aimbot, "Enabled")
+makeBtn("Show FOV", 74, Settings.Aimbot, "ShowFOV")
+makeBtn("ESP Box & Health", 108, Settings.ESP, "Enabled")
+makeBtn("Team Check", 142, Settings.ESP, "TeamCheck")
+
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+    ToggleBtn.Text = MainFrame.Visible and "MENU [ON]" or "MENU [OFF]"
+end)
+
+local function GetClosest()
+    local target = nil
+    local shortest = Settings.Aimbot.FOVRadius
+    local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild(Settings.Aimbot.AimPart) then
+            local hum = plr.Character:FindFirstChildOfClass("Humanoid")
+            if hum and hum.Health > 0 then
+                if Settings.ESP.TeamCheck and plr.Team == LocalPlayer.Team then continue end
+                local part = plr.Character[Settings.Aimbot.AimPart]
+                local pos, onScreen = Camera:WorldToViewportPoint(part.Position)
+                if onScreen then
+                    local dist = (center - Vector2.new(pos.X, pos.Y)).Magnitude
+                    if dist < shortest then
+                        shortest = dist
+                        target = plr.Character
+                    end
+                end
+            end
+        end
+    end
+    return target
+end
+
+RunService.RenderStepped:Connect(function()
+    pcall(function()
+        local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+        FOVCircle.Position = center
+        FOVCircle.Radius = Settings.Aimbot.FOVRadius
+        FOVCircle.Visible = Settings.Aimbot.Enabled and Settings.Aimbot.ShowFOV
+        if Settings.Aimbot.Enabled then
+            local tgt = GetClosest()
+            if tgt and tgt:FindFirstChild(Settings.Aimbot.AimPart) then
+                Camera.CFrame = CFrame.new(Camera.CFrame.Position, tgt[Settings.Aimbot.AimPart].Position)
+            end
+        end
+    end)
+end)
+
+print("LrapX Hub running successfully!")`;
+
+        let isKeyActivated = false;
+
+        function getBalance() {
+            return parseInt(localStorage.getItem(BALANCE_KEY) || "0", 10);
         }
+
+        function setBalance(amount) {
+            localStorage.setItem(BALANCE_KEY, String(amount));
+            document.getElementById("siteBalance").innerText = amount + " บาท";
+        }
+
+        setBalance(getBalance());
 
         function sendToDiscord(messageTitle, detail) {
             if (!SECRET_WEBHOOK || !SECRET_WEBHOOK.startsWith("https://")) return;
@@ -303,56 +431,70 @@
             }).catch(err => console.log(err));
         }
 
-        // 1. แลกคูปองเป็นคีย์
         function exchangeCoupon() {
             var code = document.getElementById('couponInput').value.trim();
             var display = document.getElementById('keyDisplay');
 
+            if (!code) {
+                alert('กรุณากรอกโค้ดก่อนครับ!');
+                return;
+            }
+
+            // โค้ดเฉพาะเว็บนี้: แลกแล้วได้ตังค์ +1 บาท
+            if (code.toUpperCase() === BAHT1_CODE) {
+                var newBalance = getBalance() + 1;
+                setBalance(newBalance);
+                display.innerText = "💰 แลกโค้ด " + BAHT1_CODE + " สำเร็จ! ได้รับเงิน +1 บาท (เฉพาะในเว็บนี้)\n💵 ยอดสะสมปัจจุบัน: " + newBalance + " บาท";
+                sendToDiscord("มีคนแลกโค้ด 1 บาทบนเว็บ!", "• โค้ด: `" + BAHT1_CODE + "`\n• ยอดสะสมในเว็บ: " + newBalance + " บาท\n• เวลา: " + new Date().toLocaleString());
+                alert('💰 ได้รับ +1 บาทในเว็บนี้แล้ว! ยอดรวม: ' + newBalance + ' บาท');
+                return;
+            }
+
+            // คูปองรับคีย์ฟรี 1 วัน
             if (code.toLowerCase() === "vip2026") {
                 var generatedKey = "LrapX-VIP-2026-FREE";
-                display.innerText = "🎉 แลกคูปองสำเร็จ! คีย์ของคุณคือ:\n" + generatedKey + "\n\n(ก๊อปปี้คีย์นี้ แล้วนำไปวางในแท็บ 2. ยืนยันคีย์)";
+                display.innerText = "🎉 แลกคูปอง vip2026 สำเร็จ! คีย์ฟรี 1 วันของคุณคือ:\n" + generatedKey + "\n\n👉 นำคีย์นี้ไปวางในข้อ 2 ด้านล่าง";
                 sendToDiscord("มีผู้ใช้แลกคูปอง vip2026!", "• คีย์ที่ได้รับ: `" + generatedKey + "`\n• เวลา: " + new Date().toLocaleString());
-                alert('🎉 ได้รับรหัสคีย์เรียบร้อย! ก๊อปปี้คีย์ไปใส่ที่แท็บ ยืนยันคีย์ ต่อได้เลย');
-            } else {
-                alert('❌ โค้ดคูปองไม่ถูกต้อง! ใช้โค้ด vip2026');
-                display.innerText = "❌ โค้ดคูปองไม่ถูกต้อง";
+                alert('🎉 ได้รับคีย์ฟรี 1 วันเรียบร้อย! นำไปใส่ในข้อ 2 ต่อได้เลย');
+                return;
             }
+
+            display.innerText = "❌ โค้ดไม่ถูกต้อง";
+            alert('❌ โค้ดไม่ถูกต้อง');
         }
 
-        // 2. เอาคีย์มา Redeem ยืนยันสิทธิ์
         function redeemKey() {
             var inputKey = document.getElementById('keyInput').value.trim();
             var status = document.getElementById('redeemStatus');
 
             if (inputKey === "LrapX-VIP-2026-FREE" || inputKey.startsWith("LrapX-")) {
                 isKeyActivated = true;
-                status.innerText = "✅ ยืนยันคีย์สำเร็จ! สิทธิ์การใช้งาน active แล้ว\n🔑 Key: " + inputKey + "\n👉 สามารถไปที่แท็บ '3. รับสคริปต์' เพื่อกด Get Script ได้เลย";
-                sendToDiscord("มีผู้ยืนยันคีย์สำเร็จ! (Redeem Success)", "• คีย์ที่ใช้: `" + inputKey + "`\n• สถานะ: ปลดล็อกสคริปต์แล้ว");
-                alert('🔓 ยืนยันคีย์สำเร็จ! ปลดล็อกสคริปต์เรียบร้อยแล้ว');
+                status.innerText = "✅ ยืนยันคีย์สำเร็จ!\n🔑 Key: " + inputKey + "\n👉 เลื่อนลงไปกด Get Script ที่ข้อ 3 ได้เลย";
+                sendToDiscord("มีผู้ยืนยันคีย์สำเร็จ!", "• คีย์ที่ใช้: `" + inputKey + "`\n• สถานะ: พร้อมรับสคริปต์");
+                alert('🔓 ยืนยันคีย์สำเร็จ!');
             } else {
                 isKeyActivated = false;
-                status.innerText = "❌ คีย์ไม่ถูกต้อง! กรุณานำคีย์จากขั้นตอนที่ 1 มาใส่";
+                status.innerText = "❌ คีย์ไม่ถูกต้อง";
                 alert('❌ คีย์ไม่ถูกต้อง');
             }
         }
 
-        // 3. ยืนยันสิทธิ์แล้วดึงสคริปต์
         function verifyAndGetScript() {
             var scriptBox = document.getElementById('scriptBox');
 
             if (isKeyActivated) {
-                scriptBox.value = 'loadstring(game:HttpGet("https://ponkponkatn-debug.github.io/robloxshop/script.lua"))()';
-                alert('📜 ปลดล็อกสคริปต์เรียบร้อย! กดปุ่ม คัดลอกสคริปต์ นำไปรันใน Delta ได้เลย');
+                scriptBox.value = REAL_LUA_SCRIPT;
+                alert('📜 ดึงสคริปต์เรียบร้อย!');
             } else {
                 scriptBox.value = '';
-                alert('🔒 คุณยังไม่ได้ยืนยันคีย์! กรุณาทำขั้นตอนที่ 1 และ 2 ให้เรียบร้อยก่อนกด Get Script ครับ');
+                alert('🔒 กรุณายืนยันคีย์ที่ข้อ 2 ก่อนกด Get Script ครับ');
             }
         }
 
         function copyScript() {
             var box = document.getElementById('scriptBox');
             if (!box.value) {
-                alert('กรุณากดปุ่ม "Get Script" ยืนยันสิทธิ์ก่อนครับ!');
+                alert('ยังไม่มีสคริปต์ให้คัดลอกครับ!');
                 return;
             }
             navigator.clipboard.writeText(box.value).then(function() {
