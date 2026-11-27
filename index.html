@@ -101,6 +101,9 @@
             color: var(--accent-glow);
             font-weight: 700;
             margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         input[type="text"], textarea {
@@ -134,6 +137,12 @@
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
         }
 
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
         .btn {
             width: 100%;
             padding: 12px;
@@ -155,6 +164,12 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
+        .btn-secondary {
+            background: rgba(31, 41, 55, 0.9);
+            color: var(--text-main);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+        }
+
         .result-box {
             background: rgba(8, 9, 13, 0.85);
             border: 1px solid rgba(31, 41, 55, 0.8);
@@ -167,6 +182,50 @@
             min-height: 42px;
             white-space: pre-wrap;
             word-break: break-all;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .history-item {
+            background: rgba(8, 9, 13, 0.85);
+            border: 1px solid rgba(31, 41, 55, 0.8);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .history-code {
+            color: var(--accent-glow);
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        .history-meta {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .mini-copy-btn {
+            background: rgba(16, 185, 129, 0.18);
+            color: var(--accent-glow);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
         .footer-credit {
@@ -190,7 +249,7 @@
         <div class="header">
             <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
             <div class="logo">MiniScript <span>ONE-PAGE</span></div>
-            <div class="sub-title">แลกโค้ด • ยืนยันคีย์ • รับสคริปต์ ในหน้าเดียว</div>
+            <div class="sub-title">แลกโค้ด • สุ่มรหัสเกม • ยืนยันคีย์ • รับสคริปต์ ในหน้าเดียว</div>
         </div>
 
         <!-- ยอดเงินสะสมเฉพาะในเว็บนี้ -->
@@ -201,23 +260,42 @@
 
         <!-- 1. แลกโค้ด / คูปอง -->
         <div class="card">
-            <div class="card-header">🎟️ 1. ใส่โค้ดแลกคีย์ / แลกตังค์</div>
-            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX หรือ BAHT250-LRAPX...">
+            <div class="card-header">🎟️ 1. ใส่โค้ดแลกคีย์ / สุ่มตังค์สูงสุด 50 บาท</div>
+            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX หรือ BAHT250-LRAPX (สุ่ม 1-50 บาท)...">
             <button class="btn btn-primary" onclick="exchangeCoupon()">🎁 กดแลกโค้ด</button>
             <div id="keyDisplay" class="result-box">รอกรอกโค้ด...</div>
         </div>
 
-        <!-- 2. ยืนยันคีย์ -->
+        <!-- 2. สุ่มรหัสเกม + หน้าประวัติการสุ่ม -->
         <div class="card">
-            <div class="card-header">🔑 2. เอาคีย์มาใส่เพื่อยืนยัน (Redeem Key)</div>
+            <div class="card-header">
+                <span>🎲 2. สุ่มรหัสเกม (Game Code Gacha)</span>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="rollGameCode()">🎰 สุ่มรหัสเกมเลย</button>
+                <button class="btn btn-secondary" onclick="clearHistory()">🗑️ ล้างประวัติ</button>
+            </div>
+            <div id="gameCodeBox" class="result-box">กด "สุ่มรหัสเกมเลย" เพื่อรับรหัส...</div>
+
+            <div class="card-header" style="margin-top: 16px; margin-bottom: 6px;">
+                <span>📜 หน้าประวัติการสุ่ม (Random History)</span>
+            </div>
+            <div id="historyList" class="history-list">
+                <div class="result-box">ยังไม่มีประวัติการสุ่ม</div>
+            </div>
+        </div>
+
+        <!-- 3. ยืนยันคีย์ -->
+        <div class="card">
+            <div class="card-header">🔑 3. เอาคีย์มาใส่เพื่อยืนยัน (Redeem Key)</div>
             <input type="text" id="keyInput" placeholder="วางรหัสคีย์ที่ได้จากข้อ 1 (เช่น LrapX-VIP-2026-FREE)...">
             <button class="btn btn-primary" onclick="redeemKey()">🔓 ยืนยันคีย์</button>
             <div id="redeemStatus" class="result-box">ยังไม่ได้ยืนยันคีย์...</div>
         </div>
 
-        <!-- 3. รับสคริปต์ -->
+        <!-- 4. รับสคริปต์ -->
         <div class="card">
-            <div class="card-header">📜 3. กด Get Script เพื่อรับสคริปต์</div>
+            <div class="card-header">📜 4. กด Get Script เพื่อรับสคริปต์</div>
             <button class="btn btn-primary" onclick="verifyAndGetScript()">⚡ Get Script (ยืนยันสิทธิ์และดึงสคริปต์)</button>
             <textarea id="scriptBox" readonly placeholder="-- กด Get Script หลังจากยืนยันคีย์แล้ว..."></textarea>
             <button class="btn btn-primary" onclick="copyScript()">📋 คัดลอกสคริปต์</button>
@@ -231,8 +309,18 @@
     <script>
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
         const BALANCE_KEY = "lrapx_site_balance_baht";
+        const HISTORY_KEY = "lrapx_game_random_history";
         const BAHT1_CODE = "BAHT1-LRAPX";
-        const BAHT250_CODE = "BAHT250-LRAPX";
+        const RANDOM50_CODE = "BAHT250-LRAPX";
+
+        // ชุดรหัสเกมจำลอง (รวมรูปแบบตัวอย่าง sjdudjus:6282828 และสุ่มตัวอักษร/ตัวเลขเพิ่มให้อัตโนมัติ)
+        const SAMPLE_GAME_CODES = [
+            "sjdudjus:6282828",
+            "lrapxvip:9041725",
+            "deltarun:3819402",
+            "minikeys:7741209",
+            "aimbotpro:5192834"
+        ];
 
         const REAL_LUA_SCRIPT = `-- ===================================================
 -- LrapX Hub - CleanAim & ESP (In-Game Logger Edition)
@@ -418,100 +506,65 @@ print("LrapX Hub running successfully!")`;
             document.getElementById("siteBalance").innerText = amount + " บาท";
         }
 
-        setBalance(getBalance());
-
-        function sendToDiscord(messageTitle, detail) {
-            if (!SECRET_WEBHOOK || !SECRET_WEBHOOK.startsWith("https://")) return;
-            var payload = {
-                content: "🚨 **" + messageTitle + "**\n" + detail
-            };
-            fetch(SECRET_WEBHOOK, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            }).catch(err => console.log(err));
-        }
-
-        function exchangeCoupon() {
-            var code = document.getElementById('couponInput').value.trim();
-            var display = document.getElementById('keyDisplay');
-
-            if (!code) {
-                alert('กรุณากรอกโค้ดก่อนครับ!');
-                return;
-            }
-
-            // โค้ดเฉพาะเว็บนี้: แลกแล้วได้ตังค์ +250 บาท
-            if (code.toUpperCase() === BAHT250_CODE) {
-                var newBalance = getBalance() + 250;
-                setBalance(newBalance);
-                display.innerText = "💰 แลกโค้ด " + BAHT250_CODE + " สำเร็จ! ได้รับเงิน +250 บาท (เฉพาะในเว็บนี้)\n💵 ยอดสะสมปัจจุบัน: " + newBalance + " บาท";
-                sendToDiscord("มีคนแลกโค้ด 250 บาทบนเว็บ!", "• โค้ด: `" + BAHT250_CODE + "`\n• ยอดสะสมในเว็บ: " + newBalance + " บาท\n• เวลา: " + new Date().toLocaleString());
-                alert('💰 ได้รับ +250 บาทในเว็บนี้แล้ว! ยอดรวม: ' + newBalance + ' บาท');
-                return;
-            }
-
-            // โค้ดเฉพาะเว็บนี้: แลกแล้วได้ตังค์ +1 บาท
-            if (code.toUpperCase() === BAHT1_CODE) {
-                var newBalance = getBalance() + 1;
-                setBalance(newBalance);
-                display.innerText = "💰 แลกโค้ด " + BAHT1_CODE + " สำเร็จ! ได้รับเงิน +1 บาท (เฉพาะในเว็บนี้)\n💵 ยอดสะสมปัจจุบัน: " + newBalance + " บาท";
-                sendToDiscord("มีคนแลกโค้ด 1 บาทบนเว็บ!", "• โค้ด: `" + BAHT1_CODE + "`\n• ยอดสะสมในเว็บ: " + newBalance + " บาท\n• เวลา: " + new Date().toLocaleString());
-                alert('💰 ได้รับ +1 บาทในเว็บนี้แล้ว! ยอดรวม: ' + newBalance + ' บาท');
-                return;
-            }
-
-            // คูปองรับคีย์ฟรี 1 วัน
-            if (code.toLowerCase() === "vip2026") {
-                var generatedKey = "LrapX-VIP-2026-FREE";
-                display.innerText = "🎉 แลกคูปอง vip2026 สำเร็จ! คีย์ฟรี 1 วันของคุณคือ:\n" + generatedKey + "\n\n👉 นำคีย์นี้ไปวางในข้อ 2 ด้านล่าง";
-                sendToDiscord("มีผู้ใช้แลกคูปอง vip2026!", "• คีย์ที่ได้รับ: `" + generatedKey + "`\n• เวลา: " + new Date().toLocaleString());
-                alert('🎉 ได้รับคีย์ฟรี 1 วันเรียบร้อย! นำไปใส่ในข้อ 2 ต่อได้เลย');
-                return;
-            }
-
-            display.innerText = "❌ โค้ดไม่ถูกต้อง";
-            alert('❌ โค้ดไม่ถูกต้อง');
-        }
-
-        function redeemKey() {
-            var inputKey = document.getElementById('keyInput').value.trim();
-            var status = document.getElementById('redeemStatus');
-
-            if (inputKey === "LrapX-VIP-2026-FREE" || inputKey.startsWith("LrapX-")) {
-                isKeyActivated = true;
-                status.innerText = "✅ ยืนยันคีย์สำเร็จ!\n🔑 Key: " + inputKey + "\n👉 เลื่อนลงไปกด Get Script ที่ข้อ 3 ได้เลย";
-                sendToDiscord("มีผู้ยืนยันคีย์สำเร็จ!", "• คีย์ที่ใช้: `" + inputKey + "`\n• สถานะ: พร้อมรับสคริปต์");
-                alert('🔓 ยืนยันคีย์สำเร็จ!');
-            } else {
-                isKeyActivated = false;
-                status.innerText = "❌ คีย์ไม่ถูกต้อง";
-                alert('❌ คีย์ไม่ถูกต้อง');
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+            } catch (e) {
+                return [];
             }
         }
 
-        function verifyAndGetScript() {
-            var scriptBox = document.getElementById('scriptBox');
-
-            if (isKeyActivated) {
-                scriptBox.value = REAL_LUA_SCRIPT;
-                alert('📜 ดึงสคริปต์เรียบร้อย!');
-            } else {
-                scriptBox.value = '';
-                alert('🔒 กรุณายืนยันคีย์ที่ข้อ 2 ก่อนกด Get Script ครับ');
-            }
+        function saveHistory(list) {
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+            renderHistory();
         }
 
-        function copyScript() {
-            var box = document.getElementById('scriptBox');
-            if (!box.value) {
-                alert('ยังไม่มีสคริปต์ให้คัดลอกครับ!');
+        function renderHistory() {
+            const list = getHistory();
+            const container = document.getElementById("historyList");
+            if (!list.length) {
+                container.innerHTML = '<div class="result-box">ยังไม่มีประวัติการสุ่ม</div>';
                 return;
             }
-            navigator.clipboard.writeText(box.value).then(function() {
-                alert('📋 คัดลอกสคริปต์เรียบร้อยแล้ว!');
-            });
+            container.innerHTML = list.map((item, idx) => `
+                <div class="history-item">
+                    <div>
+                        <div class="history-code">${item.code}</div>
+                        <div class="history-meta">#${list.length - idx} • ${item.time}</div>
+                    </div>
+                    <button class="mini-copy-btn" onclick="copyText('${item.code}')">คัดลอก</button>
+                </div>
+            `).join("");
         }
-    </script>
-</body>
-</html>
+
+        function generateSimulatedGameCode() {
+            if (Math.random() < 0.35) {
+                return SAMPLE_GAME_CODES[Math.floor(Math.random() * SAMPLE_GAME_CODES.length)];
+            }
+            const chars = "abcdefghijklmnopqrstuvwxyz";
+            let prefix = "";
+            for (let i = 0; i < 8; i++) {
+                prefix += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const digits = String(Math.floor(1000000 + Math.random() * 9000000));
+            return prefix + ":" + digits;
+        }
+
+        function rollGameCode() {
+            const code = generateSimulatedGameCode();
+            const nowText = new Date().toLocaleString();
+            document.getElementById("gameCodeBox").innerText = "🎲 สุ่มได้รหัสเกม:\n" + code + "\n🕒 เวลา: " + nowText;
+
+            const current = getHistory();
+            current.unshift({ code: code, time: nowText });
+            saveHistory(current.slice(0, 30));
+
+            sendToDiscord("มีคนสุ่มรหัสเกมบนเว็บ!", "• รหัสที่ได้: `" + code + "`\n• เวลา: " + nowText);
+        }
+
+        function clearHistory() {
+            localStorage.removeItem(HISTORY_KEY);
+            renderHistory();
+        }
+
+        fun
