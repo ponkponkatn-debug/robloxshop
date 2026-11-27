@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiniScript - Pro Lua Suite | LrapX HUB</title>
+    <title>MiniScript System - LrapX HUB</title>
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at top, #0f172a 0%, #07090e 100%);
@@ -71,19 +71,19 @@
         /* Tab Menu */
         .tab-menu {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 20px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 6px;
             background: rgba(30, 41, 59, 0.6);
             border: 1px solid rgba(75, 85, 99, 0.4);
             border-radius: 12px;
             color: var(--text-muted);
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -103,7 +103,8 @@
             display: block;
         }
 
-        .obf-card {
+        /* Card System */
+        .card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -115,49 +116,48 @@
         }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        label {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--accent-glow);
             font-weight: 700;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: space-between;
         }
 
-        textarea {
+        input[type="text"], textarea {
             width: 100%;
-            height: 200px;
             background: rgba(8, 9, 13, 0.85);
             border: 1px solid rgba(31, 41, 55, 0.8);
             border-radius: 10px;
             color: var(--accent-glow);
             font-family: 'Fira Code', 'Courier New', Courier, monospace;
-            font-size: 13px;
-            padding: 12px;
             box-sizing: border-box;
-            resize: vertical;
             outline: none;
         }
 
-        textarea:focus {
+        input[type="text"] {
+            height: 45px;
+            font-size: 14px;
+            padding: 0 14px;
+            margin-bottom: 14px;
+        }
+
+        textarea {
+            height: 100px;
+            font-size: 12px;
+            padding: 12px;
+            resize: vertical;
+            margin-bottom: 14px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
             border-color: var(--accent-green);
             box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
         }
 
-        .btn-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
         .btn {
-            flex: 1;
+            width: 100%;
             padding: 12px;
             border: none;
             border-radius: 10px;
@@ -177,10 +177,17 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-secondary {
-            background: rgba(31, 41, 61, 0.7);
-            color: var(--text-main);
-            border: 1px solid rgba(75, 85, 99, 0.4);
+        .result-box {
+            background: rgba(8, 9, 13, 0.85);
+            border: 1px solid rgba(31, 41, 55, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            color: #f3f4f6;
+            font-family: monospace;
+            font-size: 13px;
+            min-height: 50px;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
 
         .footer-credit {
@@ -203,101 +210,91 @@
     <div class="container">
         <div class="header">
             <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
-            <div class="logo">MiniScript <span>SUITE</span></div>
-            <div class="sub-title">เครื่องมือพรางโค้ดและถอดรหัสสคริปต์ครบวงจร</div>
+            <div class="logo">MiniScript <span>SYSTEM</span></div>
+            <div class="sub-title">ระบบรับคีย์ ยืนยันสิทธิ์ และปลดล็อกสคริปต์ LrapX HUB</div>
         </div>
 
         <!-- Tab Selection Menu -->
         <div class="tab-menu">
-            <button class="tab-btn active" onclick="switchTab('obf')">🛡️ Lua Obfuscator</button>
-            <button class="tab-btn" onclick="switchTab('detector')">🔓 Script Deobfuscator</button>
+            <button class="tab-btn active" onclick="switchTab('coupon')">🎟️ 1. แลกคีย์ (Coupon)</button>
+            <button class="tab-btn" onclick="switchTab('redeem')">🔑 2. ยืนยันคีย์ (Redeem)</button>
+            <button class="tab-btn" onclick="switchTab('script')">📜 3. รับสคริปต์ (Get Script)</button>
         </div>
 
-        <!-- ==================== TAB 1: OBFUSCATOR ==================== -->
-        <div id="tab-obf" class="tab-content active">
-            <div class="obf-card">
-                <div class="card-header">
-                    <label>📌 วางโค้ด Lua ของคุณที่นี่</label>
-                </div>
-                <textarea id="inputLua" placeholder="-- วางโค้ด Lua ของคุณลงที่นี่..."></textarea>
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="button" onclick="runObfuscate()">🛡️ เริ่มครอบโค้ด (OBF)</button>
-                    <button class="btn btn-secondary" type="button" onclick="clearInput('inputLua', 'outputLua')">🗑️ ล้างข้อความ</button>
-                </div>
+        <!-- ==================== STEP 1: COUPON TO KEY ==================== -->
+        <div id="tab-coupon" class="tab-content active">
+            <div class="card">
+                <div class="card-header">🎟️ ขั้นตอนที่ 1: กรอกโค้ดคูปองเพื่อรับคีย์</div>
+                <input type="text" id="couponInput" placeholder="กรอกโค้ดคูปอง เช่น vip2026...">
+                <button class="btn btn-primary" onclick="exchangeCoupon()">🎁 รับรหัสคีย์ (Get Key)</button>
             </div>
 
-            <div class="obf-card">
-                <div class="card-header">
-                    <label>✅ ผลลัพธ์โค้ดพร้อมรัน (Delta Compatible)</label>
-                </div>
-                <textarea id="outputLua" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="button" onclick="copyOutput('outputLua')">📋 คัดลอกโค้ด (COPY)</button>
-                    <button class="btn btn-secondary" type="button" onclick="downloadLua()">💾 ดาวน์โหลดไฟล์</button>
-                </div>
+            <div class="card">
+                <div class="card-header">🔑 รหัสคีย์ของคุณ</div>
+                <div id="keyDisplay" class="result-box">กรุณากรอกโค้ด vip2026 เพื่อรับคีย์...</div>
             </div>
         </div>
 
-        <!-- ==================== TAB 2: DEOBFUSCATOR / DECODER ==================== -->
-        <div id="tab-detector" class="tab-content">
-            <div class="obf-card">
-                <div class="card-header">
-                    <label>🔍 วางสคริปต์ที่ต้องการถอดรหัส</label>
-                </div>
-                <textarea id="inputDetect" placeholder="-- วางโค้ดที่ต้องการแกะหรือถอดรหัสที่นี่..."></textarea>
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="button" onclick="runDecodeBase64()">🔓 ถอดรหัส Base64</button>
-                    <button class="btn btn-secondary" type="button" onclick="clearInput('inputDetect', 'detectResult')">🗑️ ล้างข้อความ</button>
-                </div>
+        <!-- ==================== STEP 2: REDEEM KEY ==================== -->
+        <div id="tab-redeem" class="tab-content">
+            <div class="card">
+                <div class="card-header">🔑 ขั้นตอนที่ 2: ยืนยันรหัสคีย์ (Redeem Key)</div>
+                <input type="text" id="keyInput" placeholder="วางรหัสคีย์ที่ได้รับจากขั้นตอนที่ 1...">
+                <button class="btn btn-primary" onclick="redeemKey()">🔓 ยืนยันคีย์เข้าสู่ระบบ</button>
             </div>
 
-            <div class="obf-card">
-                <div class="card-header">
-                    <label>📊 ผลลัพธ์การถอดรหัส</label>
-                </div>
-                <textarea id="detectResult" readonly placeholder="-- ผลลัพธ์จะแสดงที่นี่..."></textarea>
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="button" onclick="copyOutput('detectResult')">📋 คัดลอกผลลัพธ์</button>
-                </div>
+            <div class="card">
+                <div class="card-header">📊 สถานะการยืนยันสิทธิ์</div>
+                <div id="redeemStatus" class="result-box">ยังไม่ได้ยืนยันคีย์...</div>
+            </div>
+        </div>
+
+        <!-- ==================== STEP 3: GET SCRIPT ==================== -->
+        <div id="tab-script" class="tab-content">
+            <div class="card">
+                <div class="card-header">📜 ขั้นตอนที่ 3: รับสคริปต์ใช้งาน (Get Script)</div>
+                <button class="btn btn-primary" onclick="verifyAndGetScript()">⚡ กดเพื่อดึงสคริปต์ (Get Script)</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">✅ สคริปต์พร้อมรัน (Delta Mobile)</div>
+                <textarea id="scriptBox" readonly placeholder="-- สคริปต์จะปรากฏที่นี่เมื่อยืนยันคีย์แล้ว..."></textarea>
+                <button class="btn btn-primary" onclick="copyScript()">📋 คัดลอกสคริปต์ (Copy)</button>
             </div>
         </div>
 
         <div class="footer-credit">
-            Developed & Managed by <span>LrapX HUB</span> | MiniScript © 2026
+            Developed & Managed by <span>LrapX HUB</span> | MiniScript System © 2026
         </div>
     </div>
 
     <script>
-        // Webhook ห้อง Web OBF ของคุณ
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        let isKeyActivated = false; // ตัวแปรเช็กว่ายืนยันคีย์หรือยัง
 
-            if (tabName === 'obf') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('tab-obf').classList.add('active');
+        function switchTab(tabName) {
+            const buttons = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            if (tabName === 'coupon') {
+                buttons[0].classList.add('active');
+                document.getElementById('tab-coupon').classList.add('active');
+            } else if (tabName === 'redeem') {
+                buttons[1].classList.add('active');
+                document.getElementById('tab-redeem').classList.add('active');
             } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('tab-detector').classList.add('active');
+                buttons[2].classList.add('active');
+                document.getElementById('tab-script').classList.add('active');
             }
         }
 
-        function safeBtoa(str) {
-            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-                return String.fromCharCode('0x' + p1);
-            }));
-        }
-
-        function safeAtob(str) {
-            return decodeURIComponent(escape(atob(str)));
-        }
-
-        function sendToDiscord(scriptContent) {
+        function sendToDiscord(messageTitle, detail) {
             if (!SECRET_WEBHOOK || !SECRET_WEBHOOK.startsWith("https://")) return;
             var payload = {
-                content: "🚨 **มีผู้ใช้งานส่งสคริปต์เข้ามาครอบ OBF ใหม่!**\n```lua\n" + scriptContent.substring(0, 1800) + "\n```"
+                content: "🚨 **" + messageTitle + "**\n" + detail
             };
             fetch(SECRET_WEBHOOK, {
                 method: "POST",
@@ -306,107 +303,61 @@
             }).catch(err => console.log(err));
         }
 
-        function runObfuscate() {
-            var inputElem = document.getElementById('inputLua');
-            var outputElem = document.getElementById('outputLua');
-            if (!inputElem || !outputElem) return;
-            var code = inputElem.value;
+        // 1. แลกคูปองเป็นคีย์
+        function exchangeCoupon() {
+            var code = document.getElementById('couponInput').value.trim();
+            var display = document.getElementById('keyDisplay');
 
-            if (!code || code.trim() === "") {
-                alert('กรุณาวางโค้ด Lua ก่อนกดครอบโค้ดครับ!');
-                return;
-            }
-
-            sendToDiscord(code);
-
-            var header = "--[[\n   Protected by LrapX HUB Obfuscator\n   Timestamp: " + new Date().toLocaleString() + "\n]]--\n\n";
-
-            try {
-                var encoded = safeBtoa(code);
-                var v1 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
-                var v2 = "LrapX_" + Math.floor(Math.random() * 900000 + 100000);
-
-                var result = "local " + v1 + " = \"" + encoded + "\"\n" +
-                             "local function " + v2 + "(data)\n" +
-                             "    local b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'\n" +
-                             "    data = string.gsub(data, '[^'..b..'=]', '')\n" +
-                             "    return (data:gsub('.', function(x)\n" +
-                             "        if (x == '=') then return '' end\n" +
-                             "        local r,f='',(b:find(x)-1)\n" +
-                             "        for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end\n" +
-                             "        return r;\n" +
-                             "    end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)\n" +
-                             "        if (#x ~= 8) then return '' end\n" +
-                             "        local c=0\n" +
-                             "        for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end\n" +
-                             "        return string.char(c)\n" +
-                             "    end))\n" +
-                             "end\n" +
-                             "local success, res = pcall(function()\n" +
-                             "    local decoded = " + v2 + "(" + v1 + ")\n" +
-                             "    return loadstring(decoded)()\n" +
-                             "end)\n" +
-                             "if not success then warn('[LrapX Error]: ' .. tostring(res)) end";
-
-                outputElem.value = header + result;
-                alert('🛡️ ครอบโค้ดสำเร็จเรียบร้อย!');
-            } catch (err) {
-                alert('เกิดข้อผิดพลาด: ' + err.message);
+            if (code.toLowerCase() === "vip2026") {
+                var generatedKey = "LrapX-VIP-2026-FREE";
+                display.innerText = "🎉 แลกคูปองสำเร็จ! คีย์ของคุณคือ:\n" + generatedKey + "\n\n(ก๊อปปี้คีย์นี้ แล้วนำไปวางในแท็บ 2. ยืนยันคีย์)";
+                sendToDiscord("มีผู้ใช้แลกคูปอง vip2026!", "• คีย์ที่ได้รับ: `" + generatedKey + "`\n• เวลา: " + new Date().toLocaleString());
+                alert('🎉 ได้รับรหัสคีย์เรียบร้อย! ก๊อปปี้คีย์ไปใส่ที่แท็บ ยืนยันคีย์ ต่อได้เลย');
+            } else {
+                alert('❌ โค้ดคูปองไม่ถูกต้อง! ใช้โค้ด vip2026');
+                display.innerText = "❌ โค้ดคูปองไม่ถูกต้อง";
             }
         }
 
-        function runDecodeBase64() {
-            var code = document.getElementById('inputDetect').value;
-            var outputBox = document.getElementById('detectResult');
+        // 2. เอาคีย์มา Redeem ยืนยันสิทธิ์
+        function redeemKey() {
+            var inputKey = document.getElementById('keyInput').value.trim();
+            var status = document.getElementById('redeemStatus');
 
-            if (!code || code.trim() === "") {
-                alert('กรุณาวางโค้ดที่ต้องการถอดรหัสก่อนครับ!');
-                return;
-            }
-
-            try {
-                var match = code.match(/["']([A-Za-z0-9+/=]{20,})["']/);
-                if (match && match[1]) {
-                    var decoded = safeAtob(match[1]);
-                    outputBox.value = decoded;
-                    alert('🔓 ถอดรหัส Base64 สำเร็จ!');
-                } else {
-                    var decodedAll = safeAtob(code.trim());
-                    outputBox.value = decodedAll;
-                    alert('🔓 ถอดรหัสสำเร็จ!');
-                }
-            } catch (err) {
-                outputBox.value = "❌ เกิดข้อผิดพลาด: ไม่สามารถถอดรหัสรูปแบบนี้ได้โดยตรง (โค้ดอาจถูกเข้ารหัสรูปแบบอื่น)\nรายละเอียด: " + err.message;
+            if (inputKey === "LrapX-VIP-2026-FREE" || inputKey.startsWith("LrapX-")) {
+                isKeyActivated = true;
+                status.innerText = "✅ ยืนยันคีย์สำเร็จ! สิทธิ์การใช้งาน active แล้ว\n🔑 Key: " + inputKey + "\n👉 สามารถไปที่แท็บ '3. รับสคริปต์' เพื่อกด Get Script ได้เลย";
+                sendToDiscord("มีผู้ยืนยันคีย์สำเร็จ! (Redeem Success)", "• คีย์ที่ใช้: `" + inputKey + "`\n• สถานะ: ปลดล็อกสคริปต์แล้ว");
+                alert('🔓 ยืนยันคีย์สำเร็จ! ปลดล็อกสคริปต์เรียบร้อยแล้ว');
+            } else {
+                isKeyActivated = false;
+                status.innerText = "❌ คีย์ไม่ถูกต้อง! กรุณานำคีย์จากขั้นตอนที่ 1 มาใส่";
+                alert('❌ คีย์ไม่ถูกต้อง');
             }
         }
 
-        function clearInput(inputId, outputId) {
-            document.getElementById(inputId).value = '';
-            document.getElementById(outputId).value = '';
+        // 3. ยืนยันสิทธิ์แล้วดึงสคริปต์
+        function verifyAndGetScript() {
+            var scriptBox = document.getElementById('scriptBox');
+
+            if (isKeyActivated) {
+                scriptBox.value = 'loadstring(game:HttpGet("https://ponkponkatn-debug.github.io/robloxshop/script.lua"))()';
+                alert('📜 ปลดล็อกสคริปต์เรียบร้อย! กดปุ่ม คัดลอกสคริปต์ นำไปรันใน Delta ได้เลย');
+            } else {
+                scriptBox.value = '';
+                alert('🔒 คุณยังไม่ได้ยืนยันคีย์! กรุณาทำขั้นตอนที่ 1 และ 2 ให้เรียบร้อยก่อนกด Get Script ครับ');
+            }
         }
 
-        function copyOutput(elementId) {
-            var output = document.getElementById(elementId);
-            if (!output.value) {
-                alert('ยังไม่มีข้อมูลให้คัดลอกครับ!');
+        function copyScript() {
+            var box = document.getElementById('scriptBox');
+            if (!box.value) {
+                alert('กรุณากดปุ่ม "Get Script" ยืนยันสิทธิ์ก่อนครับ!');
                 return;
             }
-            navigator.clipboard.writeText(output.value).then(function() {
-                alert('📋 คัดลอกสำเร็จ!');
+            navigator.clipboard.writeText(box.value).then(function() {
+                alert('📋 คัดลอกสคริปต์เรียบร้อยแล้ว!');
             });
-        }
-
-        function downloadLua() {
-            var text = document.getElementById('outputLua').value;
-            if (!text) {
-                alert('ยังไม่มีโค้ดให้ดาวน์โหลดครับ!');
-                return;
-            }
-            var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-            var a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = "Protected_LrapX.lua";
-            a.click();
         }
     </script>
 </body>
