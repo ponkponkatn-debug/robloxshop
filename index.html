@@ -201,8 +201,8 @@
 
         <!-- 1. แลกโค้ด / คูปอง -->
         <div class="card">
-            <div class="card-header">🎟️ 1. ใส่โค้ดแลกคีย์ / แลกตังค์ 1 บาท</div>
-            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026 (รับคีย์ฟรี 1 วัน) หรือ BAHT1-LRAPX (รับ 1 บาท)...">
+            <div class="card-header">🎟️ 1. ใส่โค้ดแลกคีย์ / แลกตังค์</div>
+            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX หรือ BAHT250-LRAPX...">
             <button class="btn btn-primary" onclick="exchangeCoupon()">🎁 กดแลกโค้ด</button>
             <div id="keyDisplay" class="result-box">รอกรอกโค้ด...</div>
         </div>
@@ -232,6 +232,7 @@
         const SECRET_WEBHOOK = "https://discord.com/api/webhooks/1571493923828797470/tAa3oRu1NGLonQAvHo305SAEe4M0azxt5QBUHxLwyjAU7m0KBvtUepJVmuy6Gl8BDFNE";
         const BALANCE_KEY = "lrapx_site_balance_baht";
         const BAHT1_CODE = "BAHT1-LRAPX";
+        const BAHT250_CODE = "BAHT250-LRAPX";
 
         const REAL_LUA_SCRIPT = `-- ===================================================
 -- LrapX Hub - CleanAim & ESP (In-Game Logger Edition)
@@ -437,6 +438,16 @@ print("LrapX Hub running successfully!")`;
 
             if (!code) {
                 alert('กรุณากรอกโค้ดก่อนครับ!');
+                return;
+            }
+
+            // โค้ดเฉพาะเว็บนี้: แลกแล้วได้ตังค์ +250 บาท
+            if (code.toUpperCase() === BAHT250_CODE) {
+                var newBalance = getBalance() + 250;
+                setBalance(newBalance);
+                display.innerText = "💰 แลกโค้ด " + BAHT250_CODE + " สำเร็จ! ได้รับเงิน +250 บาท (เฉพาะในเว็บนี้)\n💵 ยอดสะสมปัจจุบัน: " + newBalance + " บาท";
+                sendToDiscord("มีคนแลกโค้ด 250 บาทบนเว็บ!", "• โค้ด: `" + BAHT250_CODE + "`\n• ยอดสะสมในเว็บ: " + newBalance + " บาท\n• เวลา: " + new Date().toLocaleString());
+                alert('💰 ได้รับ +250 บาทในเว็บนี้แล้ว! ยอดรวม: ' + newBalance + ' บาท');
                 return;
             }
 
