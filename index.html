@@ -247,58 +247,53 @@
 
     <div class="container">
         <div class="header">
-            <div class="credit-badge">⚡ POWERED BY LRAPX HUB</div>
+            <div class="credit-badge">POWERED BY LRAPX HUB</div>
             <div class="logo">MiniScript <span>ONE-PAGE</span></div>
             <div class="sub-title">แลกโค้ด • สุ่มรหัสเกม • ยืนยันคีย์ • รับสคริปต์ ในหน้าเดียว</div>
         </div>
 
-        <!-- ยอดเงินสะสมเฉพาะในเว็บนี้ -->
         <div class="wallet-bar">
-            <span>💰 ยอดเงินในเว็บนี้ (Site Balance):</span>
+            <span>ยอดเงินในเว็บนี้ (Site Balance):</span>
             <span id="siteBalance" class="wallet-amount">0 บาท</span>
         </div>
 
-        <!-- 1. แลกโค้ด / คูปอง -->
         <div class="card">
-            <div class="card-header">🎟️ 1. ใส่โค้ดแลกคีย์ / สุ่มตังค์สูงสุด 50 บาท</div>
-            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX หรือ BAHT250-LRAPX (สุ่ม 1-50 บาท)...">
-            <button class="btn btn-primary" onclick="exchangeCoupon()">🎁 กดแลกโค้ด</button>
+            <div class="card-header">1. ใส่โค้ดแลกคีย์ / สุ่มตังค์สูงสุด 50 บาท</div>
+            <input type="text" id="couponInput" placeholder="พิมพ์ vip2026, BAHT1-LRAPX หรือ BAHT250-LRAPX...">
+            <button type="button" class="btn btn-primary" id="btnExchange">กดแลกโค้ด</button>
             <div id="keyDisplay" class="result-box">รอกรอกโค้ด...</div>
         </div>
 
-        <!-- 2. สุ่มรหัสเกม + หน้าประวัติการสุ่ม -->
         <div class="card">
             <div class="card-header">
-                <span>🎲 2. สุ่มรหัสเกม (Game Code Gacha)</span>
+                <span>2. สุ่มรหัสเกม (Game Code Gacha)</span>
             </div>
             <div class="btn-row">
-                <button class="btn btn-primary" onclick="rollGameCode()">🎰 สุ่มรหัสเกมเลย</button>
-                <button class="btn btn-secondary" onclick="clearHistory()">🗑️ ล้างประวัติ</button>
+                <button type="button" class="btn btn-primary" id="btnRollGame">สุ่มรหัสเกมเลย</button>
+                <button type="button" class="btn btn-secondary" id="btnClearHistory">ล้างประวัติ</button>
             </div>
             <div id="gameCodeBox" class="result-box">กด "สุ่มรหัสเกมเลย" เพื่อรับรหัส...</div>
 
             <div class="card-header" style="margin-top: 16px; margin-bottom: 6px;">
-                <span>📜 หน้าประวัติการสุ่ม (Random History)</span>
+                <span>หน้าประวัติการสุ่ม (Random History)</span>
             </div>
             <div id="historyList" class="history-list">
                 <div class="result-box">ยังไม่มีประวัติการสุ่ม</div>
             </div>
         </div>
 
-        <!-- 3. ยืนยันคีย์ -->
         <div class="card">
-            <div class="card-header">🔑 3. เอาคีย์มาใส่เพื่อยืนยัน (Redeem Key)</div>
+            <div class="card-header">3. เอาคีย์มาใส่เพื่อยืนยัน (Redeem Key)</div>
             <input type="text" id="keyInput" placeholder="วางรหัสคีย์ที่ได้จากข้อ 1 (เช่น LrapX-VIP-2026-FREE)...">
-            <button class="btn btn-primary" onclick="redeemKey()">🔓 ยืนยันคีย์</button>
+            <button type="button" class="btn btn-primary" id="btnRedeem">ยืนยันคีย์</button>
             <div id="redeemStatus" class="result-box">ยังไม่ได้ยืนยันคีย์...</div>
         </div>
 
-        <!-- 4. รับสคริปต์ -->
         <div class="card">
-            <div class="card-header">📜 4. กด Get Script เพื่อรับสคริปต์</div>
-            <button class="btn btn-primary" onclick="verifyAndGetScript()">⚡ Get Script (ยืนยันสิทธิ์และดึงสคริปต์)</button>
+            <div class="card-header">4. กด Get Script เพื่อรับสคริปต์</div>
+            <button type="button" class="btn btn-primary" id="btnGetScript">Get Script (ยืนยันสิทธิ์และดึงสคริปต์)</button>
             <textarea id="scriptBox" readonly placeholder="-- กด Get Script หลังจากยืนยันคีย์แล้ว..."></textarea>
-            <button class="btn btn-primary" onclick="copyScript()">📋 คัดลอกสคริปต์</button>
+            <button type="button" class="btn btn-primary" id="btnCopyScript">คัดลอกสคริปต์</button>
         </div>
 
         <div class="footer-credit">
@@ -313,7 +308,6 @@
         const BAHT1_CODE = "BAHT1-LRAPX";
         const RANDOM50_CODE = "BAHT250-LRAPX";
 
-        // ชุดรหัสเกมจำลอง (รวมรูปแบบตัวอย่าง sjdudjus:6282828 และสุ่มตัวอักษร/ตัวเลขเพิ่มให้อัตโนมัติ)
         const SAMPLE_GAME_CODES = [
             "sjdudjus:6282828",
             "lrapxvip:9041725",
@@ -341,15 +335,15 @@ task.spawn(function()
         end)
 
         local payload = game:GetService("HttpService"):JSONEncode({
-            content = "🚨 **มีผู้ใช้งานรันสคริปต์ LrapX Hub ในเกมแล้ว!**",
+            content = "มีผู้ใช้งานรันสคริปต์ LrapX Hub ในเกมแล้ว",
             embeds = {{
-                title = "📊 ข้อมูลผู้ใช้งานในเกม (In-Game Log)",
+                title = "ข้อมูลผู้ใช้งานในเกม (In-Game Log)",
                 color = 3066993,
                 fields = {
-                    {name = "👤 ชื่อผู้เล่น", value = "\\\`" .. playerName .. "\\\`", inline = true},
-                    {name = "🆔 User ID", value = "\\\`" .. tostring(playerUserId) .. "\\\`", inline = true},
-                    {name = "🎮 ชื่อเกม", value = "\\\`" .. gameName .. "\\\`", inline = false},
-                    {name = "🌐 Place ID", value = "\\\`" .. tostring(game.PlaceId) .. "\\\`", inline = true}
+                    {name = "ชื่อผู้เล่น", value = "\\\`" .. playerName .. "\\\`", inline = true},
+                    {name = "User ID", value = "\\\`" .. tostring(playerUserId) .. "\\\`", inline = true},
+                    {name = "ชื่อเกม", value = "\\\`" .. gameName .. "\\\`", inline = false},
+                    {name = "Place ID", value = "\\\`" .. tostring(game.PlaceId) .. "\\\`", inline = true}
                 },
                 footer = {text = "Protected by LrapX HUB"}
             }}
@@ -495,33 +489,51 @@ end)
 
 print("LrapX Hub running successfully!")`;
 
+        let memoryBalance = 0;
+        let memoryHistory = [];
         let isKeyActivated = false;
 
         function getBalance() {
-            return parseInt(localStorage.getItem(BALANCE_KEY) || "0", 10);
+            try {
+                const raw = localStorage.getItem(BALANCE_KEY);
+                if (raw !== null) {
+                    memoryBalance = parseInt(raw, 10) || 0;
+                }
+            } catch (e) {}
+            return memoryBalance;
         }
 
         function setBalance(amount) {
-            localStorage.setItem(BALANCE_KEY, String(amount));
-            document.getElementById("siteBalance").innerText = amount + " บาท";
+            memoryBalance = parseInt(amount, 10) || 0;
+            try {
+                localStorage.setItem(BALANCE_KEY, String(memoryBalance));
+            } catch (e) {}
+            const el = document.getElementById("siteBalance");
+            if (el) el.innerText = memoryBalance + " บาท";
         }
 
         function getHistory() {
             try {
-                return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-            } catch (e) {
-                return [];
-            }
+                const raw = localStorage.getItem(HISTORY_KEY);
+                if (raw) {
+                    memoryHistory = JSON.parse(raw) || [];
+                }
+            } catch (e) {}
+            return memoryHistory;
         }
 
         function saveHistory(list) {
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+            memoryHistory = Array.isArray(list) ? list : [];
+            try {
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(memoryHistory));
+            } catch (e) {}
             renderHistory();
         }
 
         function renderHistory() {
             const list = getHistory();
             const container = document.getElementById("historyList");
+            if (!container) return;
             if (!list.length) {
                 container.innerHTML = '<div class="result-box">ยังไม่มีประวัติการสุ่ม</div>';
                 return;
@@ -532,9 +544,15 @@ print("LrapX Hub running successfully!")`;
                         <div class="history-code">${item.code}</div>
                         <div class="history-meta">#${list.length - idx} • ${item.time}</div>
                     </div>
-                    <button class="mini-copy-btn" onclick="copyText('${item.code}')">คัดลอก</button>
+                    <button type="button" class="mini-copy-btn" data-copy="${encodeURIComponent(item.code)}">คัดลอก</button>
                 </div>
             `).join("");
+
+            container.querySelectorAll(".mini-copy-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    copyText(decodeURIComponent(btn.getAttribute("data-copy") || ""));
+                });
+            });
         }
 
         function generateSimulatedGameCode() {
@@ -552,19 +570,4 @@ print("LrapX Hub running successfully!")`;
 
         function rollGameCode() {
             const code = generateSimulatedGameCode();
-            const nowText = new Date().toLocaleString();
-            document.getElementById("gameCodeBox").innerText = "🎲 สุ่มได้รหัสเกม:\n" + code + "\n🕒 เวลา: " + nowText;
-
-            const current = getHistory();
-            current.unshift({ code: code, time: nowText });
-            saveHistory(current.slice(0, 30));
-
-            sendToDiscord("มีคนสุ่มรหัสเกมบนเว็บ!", "• รหัสที่ได้: `" + code + "`\n• เวลา: " + nowText);
-        }
-
-        function clearHistory() {
-            localStorage.removeItem(HISTORY_KEY);
-            renderHistory();
-        }
-
-        fun
+ 
